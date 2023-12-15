@@ -10728,19 +10728,19 @@ LGraphNode.prototype.executeAction = function(action)
 
     for (const [_, node] of Object.entries(canvas.selected_nodes)) {
       switch (direction) {
-        case 'right':
+        case '右对齐':
           node.pos[0] =
             boundaryNodes['right'].pos[0] +
             boundaryNodes['right'].size[0] -
             node.size[0]
           break
-        case 'left':
+        case '左对齐':
           node.pos[0] = boundaryNodes['left'].pos[0]
           break
-        case 'top':
+        case '顶部对齐':
           node.pos[1] = boundaryNodes['top'].pos[1]
           break
-        case 'bottom':
+        case '底部对齐':
           node.pos[1] =
             boundaryNodes['bottom'].pos[1] +
             boundaryNodes['bottom'].size[1] -
@@ -10754,7 +10754,7 @@ LGraphNode.prototype.executeAction = function(action)
   }
 
   LGraphCanvas.onNodeAlign = function (value, options, event, prev_menu, node) {
-    new LiteGraph.ContextMenu(['Top', 'Bottom', 'Left', 'Right'], {
+    new LiteGraph.ContextMenu(['顶部对齐', '底部对齐', '左对齐', '右对齐'], {
       event: event,
       callback: inner_clicked,
       parentMenu: prev_menu,
@@ -10770,7 +10770,7 @@ LGraphNode.prototype.executeAction = function(action)
   }
 
   LGraphCanvas.onGroupAlign = function (value, options, event, prev_menu) {
-    new LiteGraph.ContextMenu(['Top', 'Bottom', 'Left', 'Right'], {
+    new LiteGraph.ContextMenu(['顶部对齐', '底部对齐', '左对齐', '右对齐'], {
       event: event,
       callback: inner_clicked,
       parentMenu: prev_menu,
@@ -13733,7 +13733,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     if (Object.keys(this.selected_nodes).length > 1) {
       options.push({
-        content: '将所选内容对齐到..',
+        content: '将所选内容对齐..',
         has_submenu: true,
         callback: LGraphCanvas.onNodeAlign,
       })
