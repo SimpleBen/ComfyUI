@@ -1,41 +1,43 @@
-import {app} from "../../scripts/app.js";
-import {ComfyWidgets} from "../../scripts/widgets.js";
+import { app } from '../../scripts/app.js'
+import { ComfyWidgets } from '../../scripts/widgets.js'
 // Node that add notes to your project
 
 app.registerExtension({
-    name: "Comfy.NoteNode",
-    registerCustomNodes() {
-        class NoteNode {
-            color=LGraphCanvas.node_colors.yellow.color;
-            bgcolor=LGraphCanvas.node_colors.yellow.bgcolor;
-            groupcolor = LGraphCanvas.node_colors.yellow.groupcolor;
-            constructor() {
-                if (!this.properties) {
-                    this.properties = {};
-                    this.properties.text="";
-                }
-
-                ComfyWidgets.STRING(this, "", ["", {default:this.properties.text, multiline: true}], app)
-
-                this.serialize_widgets = true;
-                this.isVirtualNode = true;
-
-            }
-
-
+  name: 'Comfy.NoteNode',
+  registerCustomNodes() {
+    class NoteNode {
+      color = LGraphCanvas.node_colors.yellow.color
+      bgcolor = LGraphCanvas.node_colors.yellow.bgcolor
+      groupcolor = LGraphCanvas.node_colors.yellow.groupcolor
+      constructor() {
+        if (!this.properties) {
+          this.properties = {}
+          this.properties.text = ''
         }
 
-        // Load default visibility
+        ComfyWidgets.STRING(
+          this,
+          '',
+          ['', { default: this.properties.text, multiline: true }],
+          app
+        )
 
-        LiteGraph.registerNodeType(
-            "Note",
-            Object.assign(NoteNode, {
-                title_mode: LiteGraph.NORMAL_TITLE,
-                title: "Note",
-                collapsable: true,
-            })
-        );
+        this.serialize_widgets = true
+        this.isVirtualNode = true
+      }
+    }
 
-        NoteNode.category = "utils";
-    },
-});
+    // Load default visibility
+
+    LiteGraph.registerNodeType(
+      'Note',
+      Object.assign(NoteNode, {
+        title_mode: LiteGraph.NORMAL_TITLE,
+        title: 'Note',
+        collapsable: true,
+      })
+    )
+
+    NoteNode.category = 'utils'
+  },
+})
