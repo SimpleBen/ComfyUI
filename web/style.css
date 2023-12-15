@@ -14,7 +14,7 @@
   --input-text: #ddd;
   --descrip-text: #999;
   --drag-text: #ccc;
-  --error-text: #ff4444;
+  --error-text: #ed5150;
   --border-color: #4e4e4e;
   --border-hover-color: #5b5b5b;
   --tr-even-bg-color: #2e2e2e;
@@ -93,10 +93,11 @@ body {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 100; /* Sit on top */
-  padding: 30px 30px 10px 30px;
+  padding: 24px;
   background-color: var(--comfy-menu-bg); /* Modal background */
   color: var(--error-text);
-  box-shadow: 0 0 20px #888888;
+  border: 1px solid var(--comfy-menu-border);
+  box-shadow: 0 10px 20px -5px rgb(0 0 0 / 50%);
   border-radius: 10px;
   top: 50%;
   left: 50%;
@@ -148,6 +149,13 @@ body {
   -webkit-user-select: none;
 }
 
+.comfy-menu hr {
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--comfy-menu-border);
+}
+
 .comfy-menu button,
 .comfy-modal button {
   font-size: 14px;
@@ -188,10 +196,16 @@ body {
   background-color: var(--comfy-button-bg);
   border-radius: 6px;
   border: none;
-  margin-top: 6px;
   outline: none;
   transition: all 0.2s;
   box-shadow: 0 0 0 0px rgba(255, 255, 255, 0.04);
+}
+
+.comfy-menu > button + button,
+.comfy-menu-btns button + button,
+.comfy-menu .comfy-list button + button,
+.comfy-modal button + button {
+  margin-top: 6px;
 }
 
 .comfy-menu > button:hover,
@@ -241,6 +255,7 @@ body {
   font-size: 16px;
   padding: 12px 14px;
   width: 100%;
+  margin-top: 10px;
   background: var(--comfy--primary-color);
 }
 
