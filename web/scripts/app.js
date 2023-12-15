@@ -339,7 +339,7 @@ export class ComfyApp {
       }
 
       options.push({
-        content: 'Bypass',
+        content: '绕过节点',
         callback: (obj) => {
           if (this.mode === 4) this.mode = 0
           else this.mode = 4
@@ -350,7 +350,7 @@ export class ComfyApp {
       // prevent conflict of clipspace content
       if (!ComfyApp.clipspace_return_node) {
         options.push({
-          content: 'Copy (Clipspace)',
+          content: '复制', // Copy (Clipspace)
           callback: (obj) => {
             ComfyApp.copyToClipspace(this)
           },
@@ -358,16 +358,18 @@ export class ComfyApp {
 
         if (ComfyApp.clipspace != null) {
           options.push({
-            content: 'Paste (Clipspace)',
+            content: '粘贴', // Paste (Clipspace)
             callback: () => {
               ComfyApp.pasteFromClipspace(this)
             },
           })
         }
 
+        options.push(null)
+
         if (ComfyApp.isImageNode(this)) {
           options.push({
-            content: 'Open in MaskEditor',
+            content: '在 Mask 编辑器中打开',
             callback: (obj) => {
               ComfyApp.copyToClipspace(this)
               ComfyApp.clipspace_return_node = this
@@ -971,7 +973,7 @@ export class ComfyApp {
       if (this.selected_group && !this.selected_group_resizing) {
         var font_size =
           this.selected_group.font_size || LiteGraph.DEFAULT_GROUP_FONT_SIZE
-        var height = font_size * 1.4
+        var height = font_size * 1.6
 
         // Move group by header
         if (
@@ -1138,7 +1140,13 @@ export class ComfyApp {
         ctx.globalAlpha = 0.25 * this.editor_alpha
         ctx.beginPath()
         var font_size = group.font_size || LiteGraph.DEFAULT_GROUP_FONT_SIZE
-        ctx.rect(pos[0] + 0.5, pos[1] + 0.5, size[0], font_size * 1.4)
+        ctx.roundRect(
+          pos[0] + 0.5,
+          pos[1] + 0.5,
+          size[0],
+          font_size * 1.6,
+          [6, 6, 0, 0]
+        )
         ctx.fill()
         ctx.globalAlpha = this.editor_alpha
       }

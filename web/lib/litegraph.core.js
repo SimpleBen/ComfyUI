@@ -19,8 +19,8 @@
 
     NODE_TITLE_HEIGHT: 30,
     NODE_TITLE_TEXT_Y: 20,
-    NODE_SLOT_HEIGHT: 20,
-    NODE_WIDGET_HEIGHT: 20,
+    NODE_SLOT_HEIGHT: 25,
+    NODE_WIDGET_HEIGHT: 22,
     NODE_WIDTH: 140,
     NODE_MIN_WIDTH: 50,
     NODE_COLLAPSED_RADIUS: 10,
@@ -31,11 +31,15 @@
     NODE_TEXT_COLOR: '#AAA',
     NODE_SUBTEXT_SIZE: 12,
     NODE_DEFAULT_COLOR: '#333',
-    NODE_DEFAULT_BGCOLOR: '#353535',
+    NODE_DEFAULT_BGCOLOR: '#303030',
     NODE_DEFAULT_BOXCOLOR: '#666',
     NODE_DEFAULT_SHAPE: 'box',
+    NODE_OUTLINE_COLOR: '#4A4C4F',
     NODE_BOX_OUTLINE_COLOR: '#FFF',
-    DEFAULT_SHADOW_COLOR: 'rgba(0,0,0,0.5)',
+    DEFAULT_SHADOW_COLOR: 'rgba(0,0,0,0.12)',
+    DEFAULT_SHADOW_OFFSET_X: 0,
+    DEFAULT_SHADOW_OFFSET_Y: 8,
+    DEFAULT_SHADOW_BLUR: 6,
     DEFAULT_GROUP_FONT: 24,
 
     WIDGET_BGCOLOR: '#222',
@@ -4751,9 +4755,9 @@
 
     //default vertical slots
     if (is_input) {
-      out[0] = this.pos[0] + offset
+      out[0] = this.pos[0]
     } else {
-      out[0] = this.pos[0] + this.size[0] + 1 - offset
+      out[0] = this.pos[0] + this.size[0] + 1
     }
     out[1] =
       this.pos[1] +
@@ -5352,7 +5356,7 @@ LGraphNode.prototype.executeAction = function(action)
     this.onAfterChange = null //called after modifying the graph
 
     this.connections_width = 3
-    this.round_radius = 8
+    this.round_radius = 6
 
     this.current_node = null
     this.node_widget = null //used for widgets
@@ -8627,9 +8631,9 @@ LGraphNode.prototype.executeAction = function(action)
 
     if (this.render_shadows && !low_quality) {
       ctx.shadowColor = LiteGraph.DEFAULT_SHADOW_COLOR
-      ctx.shadowOffsetX = 2 * this.ds.scale
-      ctx.shadowOffsetY = 2 * this.ds.scale
-      ctx.shadowBlur = 3 * this.ds.scale
+      ctx.shadowOffsetX = LiteGraph.DEFAULT_SHADOW_OFFSET_X * this.ds.scale
+      ctx.shadowOffsetY = LiteGraph.DEFAULT_SHADOW_OFFSET_Y * this.ds.scale
+      ctx.shadowBlur = LiteGraph.DEFAULT_SHADOW_BLUR * this.ds.scale
     } else {
       ctx.shadowColor = 'transparent'
     }
@@ -8728,7 +8732,7 @@ LGraphNode.prototype.executeAction = function(action)
             ctx.globalAlpha = 0.4 * editor_alpha
           }
 
-          ctx.fillStyle =
+          const slot_color =
             slot.link != null
               ? slot.color_on ||
                 this.default_connection_color_byType[slot_type] ||
@@ -8737,6 +8741,8 @@ LGraphNode.prototype.executeAction = function(action)
                 this.default_connection_color_byTypeOff[slot_type] ||
                 this.default_connection_color_byType[slot_type] ||
                 this.default_connection_color.input_off
+
+          ctx.fillStyle = slot_color
 
           var pos = node.getConnectionPos(true, i, slot_pos)
           pos[0] -= node.pos[0]
@@ -8780,7 +8786,7 @@ LGraphNode.prototype.executeAction = function(action)
             doStroke = false
           } else {
             if (low_quality) ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8) //faster
-            else ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2)
+            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2)
           }
           ctx.fill()
 
@@ -8792,7 +8798,7 @@ LGraphNode.prototype.executeAction = function(action)
               if (horizontal || slot.dir == LiteGraph.UP) {
                 ctx.fillText(text, pos[0], pos[1] - 10)
               } else {
-                ctx.fillText(text, pos[0] + 10, pos[1] + 5)
+                ctx.fillText(text, pos[0] + 15, pos[1] + 5)
               }
             }
           }
@@ -8802,7 +8808,6 @@ LGraphNode.prototype.executeAction = function(action)
       //output connection slots
 
       ctx.textAlign = horizontal ? 'center' : 'right'
-      ctx.strokeStyle = 'black'
       if (node.outputs) {
         for (var i = 0; i < node.outputs.length; i++) {
           var slot = node.outputs[i]
@@ -8825,7 +8830,7 @@ LGraphNode.prototype.executeAction = function(action)
             max_y = pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5
           }
 
-          ctx.fillStyle =
+          const slot_color =
             slot.links && slot.links.length
               ? slot.color_on ||
                 this.default_connection_color_byType[slot_type] ||
@@ -8834,6 +8839,8 @@ LGraphNode.prototype.executeAction = function(action)
                 this.default_connection_color_byTypeOff[slot_type] ||
                 this.default_connection_color_byType[slot_type] ||
                 this.default_connection_color.output_off
+
+          ctx.fillStyle = slot_color
           ctx.beginPath()
           //ctx.rect( node.size[0] - 14,i*14,10,10);
 
@@ -8870,7 +8877,7 @@ LGraphNode.prototype.executeAction = function(action)
             doStroke = false
           } else {
             if (low_quality) ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8)
-            else ctx.arc(pos[0], pos[1], 4, 0, Math.PI * 2)
+            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2)
           }
 
           //trigger
@@ -8879,7 +8886,6 @@ LGraphNode.prototype.executeAction = function(action)
 
           //if(slot.links != null && slot.links.length)
           ctx.fill()
-          if (!low_quality && doStroke) ctx.stroke()
 
           //render output name
           if (render_text) {
@@ -8947,7 +8953,7 @@ LGraphNode.prototype.executeAction = function(action)
           x = node._collapsed_width * 0.5
           y = -LiteGraph.NODE_TITLE_HEIGHT
         }
-        ctx.fillStyle = '#686'
+        ctx.fillStyle = chroma(bgcolor).brighten(1).hex()
         ctx.beginPath()
         if (
           slot.type === LiteGraph.EVENT ||
@@ -9118,7 +9124,7 @@ LGraphNode.prototype.executeAction = function(action)
       //separator
       if (!node.flags.collapsed && render_title) {
         ctx.shadowColor = 'transparent'
-        ctx.fillStyle = 'rgba(0,0,0,0.2)'
+        ctx.fillStyle = chroma(bgcolor).brighten(0.3).hex()
         ctx.fillRect(0, -1, area[2], 2)
       }
     }
@@ -9215,8 +9221,9 @@ LGraphNode.prototype.executeAction = function(action)
           ctx.fill()
         }
 
-        ctx.fillStyle =
-          node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR
+        ctx.fillStyle = bgcolor
+          ? chroma(bgcolor).brighten(0.8).hex()
+          : node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR
         if (low_quality)
           ctx.fillRect(
             title_height * 0.5 - box_size * 0.5,
@@ -9335,6 +9342,35 @@ LGraphNode.prototype.executeAction = function(action)
       }
     }
 
+    // draw outline
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 1
+    ctx.beginPath()
+    if (shape == LiteGraph.BOX_SHAPE) {
+      ctx.rect(area[0], area[1], area[2], area[3])
+    } else if (
+      shape == LiteGraph.ROUND_SHAPE ||
+      (shape == LiteGraph.CARD_SHAPE && node.flags.collapsed)
+    ) {
+      ctx.roundRect(area[0], area[1], area[2], area[3], [this.round_radius])
+    } else if (shape == LiteGraph.CARD_SHAPE) {
+      ctx.roundRect(area[0], area[1], area[2], area[3], [
+        this.round_radius,
+        1,
+        this.round_radius,
+        1,
+      ])
+    } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+      ctx.arc(size[0] * 0.5, size[1] * 0.5, size[0] * 0.5 + 6, 0, Math.PI * 2)
+    }
+
+    ctx.strokeStyle = chroma(node.bgcolor || LiteGraph.NODE_OUTLINE_COLOR)
+      .brighten(0.3)
+      .hex()
+    ctx.stroke()
+    ctx.strokeStyle = fgcolor
+    ctx.globalAlpha = 1
+
     //render selection marker
     if (selected) {
       if (node.onBounding) {
@@ -9346,7 +9382,7 @@ LGraphNode.prototype.executeAction = function(action)
         area[3] += title_height
       }
       ctx.lineWidth = 1
-      ctx.globalAlpha = 0.8
+      ctx.globalAlpha = 0.5
       ctx.beginPath()
       if (shape == LiteGraph.BOX_SHAPE) {
         ctx.rect(-6 + area[0], -6 + area[1], 12 + area[2], 12 + area[3])
@@ -9866,15 +9902,21 @@ LGraphNode.prototype.executeAction = function(action)
     var show_text = this.ds.scale > 0.5
     ctx.save()
     ctx.globalAlpha = this.editor_alpha
-    var outline_color = LiteGraph.WIDGET_OUTLINE_COLOR
-    var background_color = LiteGraph.WIDGET_BGCOLOR
+    var outline_color = node.bgcolor
+      ? chroma(node.bgcolor).brighten(0.3).hex()
+      : LiteGraph.WIDGET_OUTLINE_COLOR
+    var background_color = node.bgcolor
+      ? chroma(node.bgcolor).darken(0.4).hex()
+      : LiteGraph.WIDGET_BGCOLOR
     var text_color = LiteGraph.WIDGET_TEXT_COLOR
     var secondary_text_color = LiteGraph.WIDGET_SECONDARY_TEXT_COLOR
-    var margin = 15
+    var margin = 10
 
     for (var i = 0; i < widgets.length; ++i) {
       var w = widgets[i]
       var y = posY
+      const is_active = active_widget == w
+
       if (w.y) {
         y = w.y
       }
@@ -9894,9 +9936,13 @@ LGraphNode.prototype.executeAction = function(action)
             w.clicked = false
             this.dirty_canvas = true
           }
-          ctx.fillRect(margin, y, widget_width - margin * 2, H)
-          if (show_text && !w.disabled)
-            ctx.strokeRect(margin, y, widget_width - margin * 2, H)
+
+          ctx.roundRect(margin, y, widget_width - margin * 2, H, [
+            this.round_radius / 2,
+          ])
+          ctx.fill()
+          ctx.stroke()
+          if (show_text && !w.disabled) ctx.stroke()
           if (show_text) {
             ctx.textAlign = 'center'
             ctx.fillStyle = text_color
@@ -9947,7 +9993,7 @@ LGraphNode.prototype.executeAction = function(action)
           if (nvalue > 1.0) nvalue = 1.0
           ctx.fillStyle = w.options.hasOwnProperty('slider_color')
             ? w.options.slider_color
-            : active_widget == w
+            : is_active
             ? '#89A'
             : '#678'
           ctx.fillRect(margin, y, nvalue * (widget_width - margin * 2), H)
@@ -9989,26 +10035,59 @@ LGraphNode.prototype.executeAction = function(action)
           ctx.fillStyle = background_color
           ctx.beginPath()
           if (show_text)
-            ctx.roundRect(margin, y, widget_width - margin * 2, H, [H * 0.5])
+            ctx.roundRect(margin, y, widget_width - margin * 2, H, [
+              this.round_radius / 2,
+            ])
           else ctx.rect(margin, y, widget_width - margin * 2, H)
           ctx.fill()
           if (show_text) {
             if (!w.disabled) ctx.stroke()
-            ctx.fillStyle = text_color
+            ctx.fillStyle = chroma(text_color).alpha(0.75).hex()
             if (!w.disabled) {
+              /** 更改为画圆角三角形 */
               ctx.beginPath()
-              ctx.moveTo(margin + 16, y + 5)
-              ctx.lineTo(margin + 6, y + H * 0.5)
-              ctx.lineTo(margin + 16, y + H - 5)
+              ctx.moveTo(margin + 16, y + 5 + 3)
+              ctx.arcTo(margin + 16, y + 5, margin + 6 + 3, y + H * 0.5 - 3, 1)
+              ctx.arcTo(
+                margin + 6,
+                y + H * 0.5,
+                margin + 6 + 3,
+                y + H * 0.5 + 3,
+                1
+              )
+              ctx.arcTo(margin + 16, y + H - 5, margin + 16, y + H - 5 - 3, 1)
               ctx.fill()
               ctx.beginPath()
-              ctx.moveTo(widget_width - margin - 16, y + 5)
-              ctx.lineTo(widget_width - margin - 6, y + H * 0.5)
-              ctx.lineTo(widget_width - margin - 16, y + H - 5)
+              // ctx.moveTo(widget_width - margin - 16, y + 5)
+              // ctx.lineTo(widget_width - margin - 6, y + H * 0.5)
+              // ctx.lineTo(widget_width - margin - 16, y + H - 5)
+
+              ctx.moveTo(widget_width - margin - 16, y + 5 + 3)
+              ctx.arcTo(
+                widget_width - margin - 16,
+                y + 5,
+                widget_width - margin - 6 - 3,
+                y + H * 0.5 - 3,
+                1
+              )
+              ctx.arcTo(
+                widget_width - margin - 6,
+                y + H * 0.5,
+                widget_width - margin - 6 - 3,
+                y + H * 0.5 + 3,
+                1
+              )
+              ctx.arcTo(
+                widget_width - margin - 16,
+                y + H - 5,
+                widget_width - margin - 16,
+                y + H - 5 - 3,
+                1
+              )
               ctx.fill()
             }
             ctx.fillStyle = secondary_text_color
-            ctx.fillText(w.label || w.name, margin * 2 + 5, y + H * 0.7)
+            ctx.fillText(w.label || w.name, margin * 2 + 12, y + H * 0.7)
             ctx.fillStyle = text_color
             ctx.textAlign = 'right'
             if (w.type == 'number') {
@@ -10037,7 +10116,13 @@ LGraphNode.prototype.executeAction = function(action)
           ctx.fillStyle = background_color
           ctx.beginPath()
           if (show_text)
-            ctx.roundRect(margin, y, widget_width - margin * 2, H, [H * 0.5])
+            ctx.roundRect(
+              margin,
+              y,
+              widget_width - margin * 2,
+              H,
+              this.round_radius / 2
+            )
           else ctx.rect(margin, y, widget_width - margin * 2, H)
           ctx.fill()
           if (show_text) {
@@ -10347,21 +10432,37 @@ LGraphNode.prototype.executeAction = function(action)
       var size = group._size
       ctx.globalAlpha = 0.25 * this.editor_alpha
       ctx.beginPath()
-      ctx.rect(pos[0] + 0.5, pos[1] + 0.5, size[0], size[1])
+      ctx.roundRect(
+        pos[0] + 0.5,
+        pos[1] + 0.5,
+        size[0],
+        size[1],
+        this.round_radius
+      )
       ctx.fill()
       ctx.globalAlpha = this.editor_alpha
       ctx.stroke()
 
       ctx.beginPath()
-      ctx.moveTo(pos[0] + size[0], pos[1] + size[1])
-      ctx.lineTo(pos[0] + size[0] - 10, pos[1] + size[1])
-      ctx.lineTo(pos[0] + size[0], pos[1] + size[1] - 10)
+      ctx.moveTo(pos[0] + size[0] - 10, pos[1] + size[1] + 1)
+      ctx.arcTo(
+        pos[0] + size[0] + 1,
+        pos[1] + size[1],
+        pos[0] + size[0],
+        pos[1] + size[1] - 10,
+        this.round_radius
+      )
+      ctx.lineTo(pos[0] + size[0] + 1, pos[1] + size[1] - 10)
       ctx.fill()
 
       var font_size = group.font_size || LiteGraph.DEFAULT_GROUP_FONT_SIZE
       ctx.font = font_size + 'px Arial'
       ctx.textAlign = 'left'
-      ctx.fillText(group.title, pos[0] + 4, pos[1] + font_size)
+      ctx.fillText(
+        group.title,
+        pos[0] + font_size * 0.5,
+        pos[1] + font_size * 1.13
+      )
     }
 
     ctx.restore()
@@ -11055,7 +11156,7 @@ LGraphNode.prototype.executeAction = function(action)
     )
       destType = node_right.inputs[link.target_slot].type
 
-    var options = ['Add Node', null, 'Delete', null]
+    var options = ['添加节点', null, '移除', null]
 
     var menu = new LiteGraph.ContextMenu(options, {
       event: e,
@@ -11065,7 +11166,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     function inner_clicked(v, options, e) {
       switch (v) {
-        case 'Add Node':
+        case '添加节点':
           LGraphCanvas.onMenuAdd(null, null, e, menu, function (node) {
             // console.debug("node autoconnect");
             if (
@@ -11084,7 +11185,7 @@ LGraphNode.prototype.executeAction = function(action)
           })
           break
 
-        case 'Delete':
+        case '移除':
           that.graph.removeLink(link.id)
           break
         default:
@@ -11338,10 +11439,10 @@ LGraphNode.prototype.executeAction = function(action)
         return false
     }
 
-    var options = ['Add Node', null]
+    var options = ['添加节点', null]
 
     if (that.allow_searchbox) {
-      options.push('Search')
+      options.push('搜索节点')
       options.push(null)
     }
 
@@ -11377,7 +11478,7 @@ LGraphNode.prototype.executeAction = function(action)
     function inner_clicked(v, options, e) {
       //console.log("Process showConnectionMenu selection");
       switch (v) {
-        case 'Add Node':
+        case '添加节点':
           LGraphCanvas.onMenuAdd(null, null, e, menu, function (node) {
             if (isFrom) {
               opts.nodeFrom.connectByType(iSlotConn, node, fromSlotType)
@@ -11386,7 +11487,7 @@ LGraphNode.prototype.executeAction = function(action)
             }
           })
           break
-        case 'Search':
+        case '搜索节点':
           if (isFrom) {
             that.showSearchBox(e, {
               node_from: opts.nodeFrom,
@@ -13413,19 +13514,19 @@ LGraphNode.prototype.executeAction = function(action)
   }
 
   LGraphCanvas.node_colors = {
-    red: { color: '#322', bgcolor: '#533', groupcolor: '#A88' },
-    brown: { color: '#332922', bgcolor: '#593930', groupcolor: '#b06634' },
-    green: { color: '#232', bgcolor: '#353', groupcolor: '#8A8' },
-    blue: { color: '#223', bgcolor: '#335', groupcolor: '#88A' },
+    red: { color: '#462f2f', bgcolor: '#573b3b', groupcolor: '#A88' },
+    brown: { color: '#3a322a', bgcolor: '#493f34', groupcolor: '#b06634' },
+    green: { color: '#2d3b2f', bgcolor: '#384a3b', groupcolor: '#8A8' },
+    blue: { color: '#2a3848', bgcolor: '#35465a', groupcolor: '#88A' },
     pale_blue: {
-      color: '#2a363b',
-      bgcolor: '#3f5159',
+      color: '#333b41',
+      bgcolor: '#404a51',
       groupcolor: '#3f789e',
     },
-    cyan: { color: '#233', bgcolor: '#355', groupcolor: '#8AA' },
-    purple: { color: '#323', bgcolor: '#535', groupcolor: '#a1309b' },
-    yellow: { color: '#432', bgcolor: '#653', groupcolor: '#b58b2a' },
-    black: { color: '#222', bgcolor: '#000', groupcolor: '#444' },
+    cyan: { color: '#344042', bgcolor: '#414f52', groupcolor: '#8AA' },
+    purple: { color: '#363141', bgcolor: '#443d50', groupcolor: '#a1309b' },
+    yellow: { color: '#413d32', bgcolor: '#514c3f', groupcolor: '#b58b2a' },
+    black: { color: '#131313', bgcolor: '#181818', groupcolor: '#444' },
   }
 
   LGraphCanvas.prototype.getCanvasMenuOptions = function () {
@@ -13436,11 +13537,11 @@ LGraphNode.prototype.executeAction = function(action)
     } else {
       options = [
         {
-          content: 'Add Node',
+          content: '添加节点',
           has_submenu: true,
           callback: LGraphCanvas.onMenuAdd,
         },
-        { content: 'Add Group', callback: LGraphCanvas.onGroupAdd },
+        { content: '添加组', callback: LGraphCanvas.onGroupAdd },
         //{ content: "Arrange", callback: that.graph.arrange },
         //{content:"Collapse All", callback: LGraphCanvas.onMenuCollapseAll }
       ]
@@ -13450,7 +13551,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       if (Object.keys(this.selected_nodes).length > 1) {
         options.push({
-          content: 'Align',
+          content: '对齐方式',
           has_submenu: true,
           callback: LGraphCanvas.onGroupAlign,
         })
@@ -13482,60 +13583,63 @@ LGraphNode.prototype.executeAction = function(action)
       options = node.getMenuOptions(this)
     } else {
       options = [
+        // {
+        //   content: 'Inputs',
+        //   has_submenu: true,
+        //   disabled: true,
+        //   callback: LGraphCanvas.showMenuNodeOptionalInputs,
+        // },
+        // {
+        //   content: 'Outputs',
+        //   has_submenu: true,
+        //   disabled: true,
+        //   callback: LGraphCanvas.showMenuNodeOptionalOutputs,
+        // },
+        // null,
         {
-          content: 'Inputs',
-          has_submenu: true,
-          disabled: true,
-          callback: LGraphCanvas.showMenuNodeOptionalInputs,
-        },
-        {
-          content: 'Outputs',
-          has_submenu: true,
-          disabled: true,
-          callback: LGraphCanvas.showMenuNodeOptionalOutputs,
-        },
-        null,
-        {
-          content: 'Properties',
+          content: '属性', // Properties
           has_submenu: true,
           callback: LGraphCanvas.onShowMenuNodeProperties,
         },
         {
-          content: 'Properties Panel',
+          content: '属性面板', // Properties Panel
           callback: function (item, options, e, menu, node) {
             LGraphCanvas.active_canvas.showShowNodePanel(node)
           },
         },
         null,
         {
-          content: 'Title',
+          content: '设置标题', // Title
           callback: LGraphCanvas.onShowPropertyEditor,
         },
         {
-          content: 'Mode',
+          content: '模式', // Mode
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeMode,
         },
       ]
       if (node.resizable !== false) {
         options.push({
-          content: 'Resize',
+          content: '重置尺寸', // Resize
           callback: LGraphCanvas.onMenuResizeNode,
         })
       }
       options.push(
         {
-          content: 'Collapse',
+          content: '折叠节点', // Collapse
           callback: LGraphCanvas.onMenuNodeCollapse,
         },
-        { content: 'Pin', callback: LGraphCanvas.onMenuNodePin },
         {
-          content: 'Colors',
+          content: '锁定节点', // Pin
+          callback: LGraphCanvas.onMenuNodePin,
+        },
+        {
+          content: '设置颜色', // Colors
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeColors,
         },
         {
-          content: 'Shapes',
+          content: '节点形状', // Shapes
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeShapes,
         },
@@ -13567,7 +13671,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     if (node.clonable !== false) {
       options.push({
-        content: 'Clone',
+        content: '克隆节点',
         callback: LGraphCanvas.onMenuNodeClone,
       })
     }
@@ -13575,20 +13679,20 @@ LGraphNode.prototype.executeAction = function(action)
     if (0)
       //TODO
       options.push({
-        content: 'To Subgraph',
+        content: '发送到 Subgraph',
         callback: LGraphCanvas.onMenuNodeToSubgraph,
       })
 
     if (Object.keys(this.selected_nodes).length > 1) {
       options.push({
-        content: 'Align Selected To',
+        content: '将所选内容对齐到..',
         has_submenu: true,
         callback: LGraphCanvas.onNodeAlign,
       })
     }
 
     options.push(null, {
-      content: 'Remove',
+      content: '移除节点',
       disabled: !(node.removable !== false && !node.block_delete),
       callback: LGraphCanvas.onMenuNodeRemove,
     })
@@ -13602,20 +13706,20 @@ LGraphNode.prototype.executeAction = function(action)
 
   LGraphCanvas.prototype.getGroupMenuOptions = function (node) {
     var o = [
-      { content: 'Title', callback: LGraphCanvas.onShowPropertyEditor },
+      { content: '设置组标题', callback: LGraphCanvas.onShowPropertyEditor },
       {
-        content: 'Color',
+        content: '颜色',
         has_submenu: true,
         callback: LGraphCanvas.onMenuNodeColors,
       },
       {
-        content: 'Font size',
+        content: '字体大小',
         property: 'font_size',
         type: 'Number',
         callback: LGraphCanvas.onShowPropertyEditor,
       },
       null,
-      { content: 'Remove', callback: LGraphCanvas.onMenuNodeRemove },
+      { content: '移除组', callback: LGraphCanvas.onMenuNodeRemove },
     ]
 
     return o
@@ -13685,10 +13789,10 @@ LGraphNode.prototype.executeAction = function(action)
         if (group) {
           //on group
           menu_info.push(null, {
-            content: 'Edit Group',
+            content: '编辑组',
             has_submenu: true,
             submenu: {
-              title: 'Group',
+              title: group.title || '组',
               extra: group,
               options: this.getGroupMenuOptions(group),
             },

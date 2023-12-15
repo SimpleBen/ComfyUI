@@ -305,7 +305,7 @@ app.registerExtension({
           }
           if (w.type === CONVERTED_TYPE) {
             toWidget.push({
-              content: `Convert ${w.name} to widget`,
+              content: `将 ${w.name} 转为 widget`,
               callback: () => convertToWidget(this, w),
             })
           } else {
@@ -315,7 +315,7 @@ app.registerExtension({
             ]
             if (isConvertableWidget(w, config)) {
               toInput.push({
-                content: `Convert ${w.name} to input`,
+                content: `将 ${w.name} 转为 input`,
                 callback: () => convertToInput(this, w, config),
               })
             }

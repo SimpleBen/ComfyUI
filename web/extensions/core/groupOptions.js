@@ -73,7 +73,7 @@ app.registerExtension({
       )
       if (!group) {
         options.push({
-          content: 'Add Group For Selected Nodes',
+          content: '为所选节点创建组', // 'Add Group For Selected Nodes',
           disabled: !Object.keys(app.canvas.selected_nodes || {}).length,
           callback: () => {
             var group = new LiteGraph.LGraphGroup()
@@ -91,7 +91,7 @@ app.registerExtension({
       const nodesInGroup = group._nodes
 
       options.push({
-        content: 'Add Selected Nodes To Group',
+        content: '将选中的节点加入到组', // 'Add Selected Nodes To Group'
         disabled: !Object.keys(app.canvas.selected_nodes || {}).length,
         callback: () => {
           addNodesToGroup(group, this.selected_nodes)
@@ -117,7 +117,7 @@ app.registerExtension({
       }
 
       options.push({
-        content: 'Fit Group To Nodes',
+        content: '根据子节点调整组尺寸', // 'Fit Group To Nodes',
         callback: () => {
           addNodesToGroup(group)
           this.graph.change()
@@ -125,13 +125,15 @@ app.registerExtension({
       })
 
       options.push({
-        content: 'Select Nodes',
+        content: '选择全部子节点', // 'Select Nodes',
         callback: () => {
           this.selectNodes(nodesInGroup)
           this.graph.change()
           this.canvas.focus()
         },
       })
+
+      options.push(null)
 
       // Modes
       // 0: Always
@@ -140,13 +142,18 @@ app.registerExtension({
       // 3: On Trigger
       // 4: Bypass
       // If all nodes are the same mode, add a menu option to change the mode
+      const contentMap = {
+        nerver: '设置组内节点永不触发', // 'Set Group Nodes to Never'
+        always: '设置组内节点总是触发', // 'Set Group Nodes to Always'
+        bypass: '设置组内节点绕过触发', // 'Bypass Group Nodes'
+      }
       if (allNodesAreSameMode) {
         const mode = nodesInGroup[0].mode
         switch (mode) {
           case 0:
             // All nodes are always, option to disable, and bypass
             options.push({
-              content: 'Set Group Nodes to Never',
+              content: contentMap.nerver, // 'Set Group Nodes to Never',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 2)
@@ -154,7 +161,7 @@ app.registerExtension({
               },
             })
             options.push({
-              content: 'Bypass Group Nodes',
+              content: contentMap.bypass, // 'Bypass Group Nodes',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 4)
@@ -165,7 +172,7 @@ app.registerExtension({
           case 2:
             // All nodes are never, option to enable, and bypass
             options.push({
-              content: 'Set Group Nodes to Always',
+              content: contentMap.always, // 'Set Group Nodes to Always',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 0)
@@ -173,7 +180,7 @@ app.registerExtension({
               },
             })
             options.push({
-              content: 'Bypass Group Nodes',
+              content: contentMap.bypass, // 'Bypass Group Nodes',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 4)
@@ -184,7 +191,7 @@ app.registerExtension({
           case 4:
             // All nodes are bypass, option to enable, and disable
             options.push({
-              content: 'Set Group Nodes to Always',
+              content: contentMap.always, // 'Set Group Nodes to Always',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 0)
@@ -192,7 +199,7 @@ app.registerExtension({
               },
             })
             options.push({
-              content: 'Set Group Nodes to Never',
+              content: contentMap.nerver, // 'Set Group Nodes to Never',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 2)
@@ -203,7 +210,7 @@ app.registerExtension({
           default:
             // All nodes are On Trigger or On Event(Or other?), option to disable, set to always, or bypass
             options.push({
-              content: 'Set Group Nodes to Always',
+              content: contentMap.always, // 'Set Group Nodes to Always',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 0)
@@ -211,7 +218,7 @@ app.registerExtension({
               },
             })
             options.push({
-              content: 'Set Group Nodes to Never',
+              content: contentMap.nerver, // 'Set Group Nodes to Never',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 2)
@@ -219,7 +226,7 @@ app.registerExtension({
               },
             })
             options.push({
-              content: 'Bypass Group Nodes',
+              content: contentMap.bypass, // 'Bypass Group Nodes',
               callback: () => {
                 for (const node of nodesInGroup) {
                   setNodeMode(node, 4)
@@ -231,7 +238,7 @@ app.registerExtension({
       } else {
         // Nodes are not all the same mode, add a menu option to change the mode to always, never, or bypass
         options.push({
-          content: 'Set Group Nodes to Always',
+          content: contentMap.always, // 'Set Group Nodes to Always',
           callback: () => {
             for (const node of nodesInGroup) {
               setNodeMode(node, 0)
@@ -239,7 +246,7 @@ app.registerExtension({
           },
         })
         options.push({
-          content: 'Set Group Nodes to Never',
+          content: contentMap.nerver, // 'Set Group Nodes to Never',
           callback: () => {
             for (const node of nodesInGroup) {
               setNodeMode(node, 2)
@@ -247,7 +254,7 @@ app.registerExtension({
           },
         })
         options.push({
-          content: 'Bypass Group Nodes',
+          content: contentMap.bypass, // 'Bypass Group Nodes',
           callback: () => {
             for (const node of nodesInGroup) {
               setNodeMode(node, 4)

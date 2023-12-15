@@ -319,7 +319,7 @@ app.registerExtension({
 
       options.push(null)
       options.push({
-        content: `Save Selected as Template`,
+        content: `将所选内容保存为模板`, // 'Save Selected as Template',
         disabled: !Object.keys(app.canvas.selected_nodes || {}).length,
         callback: () => {
           const name = prompt('Enter name')
@@ -370,12 +370,12 @@ app.registerExtension({
       })
 
       subItems.push(null, {
-        content: 'Manage',
+        content: '管理模板',
         callback: () => manage.show(),
       })
 
       options.push({
-        content: 'Node Templates',
+        content: '节点模板', // 'Node Templates',
         submenu: {
           options: subItems,
         },
