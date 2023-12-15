@@ -280,7 +280,7 @@ export class ComfyLogging {
         return $el('tr', [
           $el('td', [
             $el('label', {
-              textContent: 'Logging',
+              textContent: '日志',
               for: htmlSettingId,
             }),
           ]),
@@ -294,7 +294,7 @@ export class ComfyLogging {
               },
             }),
             $el('button', {
-              textContent: 'View Logs',
+              textContent: '查看日志',
               onclick: () => {
                 this.app.ui.settings.element.close()
                 this.dialog.show()

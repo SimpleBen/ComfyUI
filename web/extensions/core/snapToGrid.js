@@ -8,14 +8,14 @@ app.registerExtension({
     // Add setting to control grid size
     app.ui.settings.addSetting({
       id: 'Comfy.SnapToGrid.GridSize',
-      name: 'Grid Size',
+      name: '画布网格尺寸',
       type: 'slider',
       attrs: {
         min: 1,
         max: 500,
       },
       tooltip:
-        'When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.',
+        '当按住 Shift 的同时拖动节点并调整其尺寸时，它们将与网格对齐。本选项控制了该网格的尺寸',
       defaultValue: LiteGraph.CANVAS_GRID_SIZE,
       onChange(value) {
         LiteGraph.CANVAS_GRID_SIZE = +value
