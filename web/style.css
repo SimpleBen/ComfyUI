@@ -2,6 +2,7 @@
   --fg-color: #fff;
   --bg-color: #202020;
   --comfy-menu-bg: #353535;
+  --comfy-menu-border: #4e4e4e;
   --comfy-input-bg: rgba(0, 0, 0, 0.2);
   --comfy-input-focus-bg: rgba(0, 0, 0, 0.25);
   --comfy-input-hover-border: rgba(255, 255, 255, 0.06);
@@ -11,6 +12,7 @@
   --drag-text: #ccc;
   --error-text: #ff4444;
   --border-color: #4e4e4e;
+  --border-hover-color: #5b5b5b;
   --tr-even-bg-color: #222;
   --tr-odd-bg-color: #353535;
   --scrollbar-thumb-color: rgba(255, 255, 255, 0.12);
@@ -309,30 +311,32 @@ button.comfy-queue-btn {
 
 .graphdialog {
   min-height: 1em;
+  border: 1px solid var(--comfy-menu-border);
   background-color: var(--comfy-menu-bg);
 }
 
 .graphdialog .name {
-  font-size: 14px;
   font-family: sans-serif;
   color: var(--descrip-text);
-}
-
-.graphdialog button {
-  margin-top: unset;
-  vertical-align: unset;
-  height: 1.6em;
-  padding-right: 8px;
+  border: 1px solid var(--comfy-menu-border);
+  background-color: var(--comfy-menu-bg);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .graphdialog input,
 .graphdialog textarea,
 .graphdialog select {
   background-color: var(--comfy-input-bg);
-  border: 2px solid;
-  border-color: var(--border-color);
+  border: 1px solid var(--border-color);
   color: var(--input-text);
-  border-radius: 12px 0 0 12px;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+.graphdialog input:hover,
+.graphdialog textarea:hover,
+.graphdialog select:hover {
+  border-color: var(--border-hover-color);
 }
 
 /* Dialogs */
@@ -402,26 +406,32 @@ dialog::backdrop {
 /* Context menu */
 
 .litegraph .dialog {
-  z-index: 1;
+  z-index: 999;
   font-family: Arial, sans-serif;
+  border: 1px solid var(--comfy-menu-border);
+  border-radius: 6px;
 }
 
 .litegraph .litemenu-entry.has_submenu {
   position: relative;
   padding-right: 20px;
+  border-right: 0;
 }
 
 .litemenu-entry.has_submenu::after {
-  content: '>';
+  content: '▶';
+  font-size: 8px;
   position: absolute;
-  top: 0;
-  right: 2px;
+  top: 6.5px;
+  right: 4px;
 }
 
 .litegraph.litecontextmenu,
 .litegraph.litecontextmenu.dark {
   z-index: 9999 !important;
+  padding: 1px;
   background-color: var(--comfy-menu-bg) !important;
+  border: 1px solid var(--comfy-menu-border) !important;
   filter: brightness(95%);
 }
 
@@ -432,22 +442,38 @@ dialog::backdrop {
   color: var(--input-text);
 }
 
+.litegraph.litecontextmenu
+  .litemenu-entry:active:not(.disabled):not(.separator) {
+  filter: brightness(70%);
+}
+
 .litegraph.litecontextmenu .litemenu-entry.submenu,
 .litegraph.litecontextmenu.dark .litemenu-entry.submenu {
   background-color: var(--comfy-menu-bg) !important;
   color: var(--input-text);
+  border-radius: 3px;
+  padding: 3px 6px;
+  padding-right: 25px;
 }
 
 .litegraph.litecontextmenu input {
+  outline: none;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
   background-color: var(--comfy-input-bg) !important;
   color: var(--input-text) !important;
+  margin-top: 5px;
+  transition: all 0.2s;
+}
+.litegraph.litecontextmenu input:focus {
+  border-color: var(--border-hover-color);
 }
 
 .comfy-context-menu-filter {
   box-sizing: border-box;
   border: 1px solid #999;
-  margin: 0 0 5px 5px;
-  width: calc(100% - 10px);
+  margin: 5px;
+  width: auto;
 }
 
 .comfy-img-preview {

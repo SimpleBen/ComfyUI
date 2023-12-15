@@ -1,7 +1,6 @@
 /* this CSS contains only the basic CSS needed to run the app and use it */
 
 .lgraphcanvas {
-  /*cursor: crosshair;*/
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -21,7 +20,8 @@
   min-width: 100px;
   color: #aaf;
   padding: 0;
-  box-shadow: 0 0 10px black !important;
+  border-radius: 6px;
+  box-shadow: 0px 5px 6px 0px rgb(0 0 0 / 25%) !important;
   background-color: #2e2e2e !important;
   z-index: 10;
 }
@@ -47,6 +47,25 @@
 
 .litegraph.litecontextmenu.dark .litemenu-entry.submenu {
   background-color: #000 !important;
+}
+
+.litegraph.litecontextmenu .litemenu-entry.submenu:has(> .color-pick) {
+  padding: 0;
+}
+.litegraph.litecontextmenu .litemenu-entry.submenu > .color-pick {
+  display: flex;
+  align-items: center;
+  color: #999;
+  height: 20px;
+  padding-left: 4px;
+  border-left: 8px solid;
+  border-radius: 2px;
+  text-transform: capitalize;
+}
+.litegraph.litecontextmenu
+  .litemenu-entry.submenu
+  > .color-pick.color__default {
+  background-color: #3f3f3f;
 }
 
 .litegraph .litemenubar ul {
@@ -123,13 +142,16 @@
 .litegraph .litemenu-entry.separator {
   display: block;
   border-top: 1px solid #333;
-  border-bottom: 1px solid #666;
+  border-bottom: 1px solid #444;
   width: 100%;
   height: 0px;
-  margin: 3px 0 2px 0;
+  margin: 3px 0 3px 0;
   background-color: transparent;
   padding: 0 !important;
   cursor: default !important;
+}
+.litegraph .litemenu-entry.separator:last-child {
+  display: none;
 }
 
 .litegraph .litemenu-entry.has_submenu {
@@ -137,11 +159,12 @@
 }
 
 .litegraph .litemenu-title {
-  color: #dde;
-  background-color: #111;
+  color: rgb(236, 236, 236);
+  background-color: #1c1c1c;
   margin: 0;
-  padding: 2px;
+  padding: 3px 6px;
   cursor: default;
+  border-radius: 2px 2px 0 0;
 }
 
 .litegraph .litemenu-entry:hover:not(.disabled):not(.separator) {
@@ -155,6 +178,7 @@
   text-align: left;
   min-width: 80px;
   min-height: 1.2em;
+  vertical-align: middle;
 }
 
 .litegraph .litemenu-entry .property_value {
@@ -164,7 +188,9 @@
   min-width: 80px;
   min-height: 1.2em;
   vertical-align: middle;
-  padding-right: 10px;
+  padding: 2px 8px;
+  margin-left: 10px;
+  border-radius: 3px;
 }
 
 .litegraph.litesearchbox {
@@ -235,19 +261,18 @@
   left: 50%;
   margin-top: -150px;
   margin-left: -200px;
-
   background-color: #2a2a2a;
-
   min-width: 400px;
   min-height: 200px;
   box-shadow: 0 0 4px #111;
   border-radius: 6px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .litegraph .dialog.settings {
   left: 10px;
   top: 10px;
-  height: calc(100% - 20px);
   margin: auto;
   max-width: 50%;
 }
@@ -268,7 +293,8 @@
   margin: 4px;
   margin-right: 10px;
   cursor: pointer;
-  font-size: 1.4em;
+  font-size: 18px;
+  transition: all 0.2s;
 }
 
 .litegraph .dialog .close:hover {
@@ -276,21 +302,26 @@
 }
 
 .litegraph .dialog .dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: #aaa;
-  border-bottom: 1px solid #161616;
+  border-bottom: 1px solid #333;
 }
 
 .litegraph .dialog .dialog-header {
   height: 40px;
 }
 .litegraph .dialog .dialog-footer {
-  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   padding: 10px;
-  border-top: 1px solid #1a1a1a;
+  margin-top: 20px;
 }
 
 .litegraph .dialog .dialog-header .dialog-title {
-  font: 20px 'Arial';
+  font: 14px 'Arial';
   margin: 4px;
   padding: 4px 10px;
   display: inline-block;
@@ -309,6 +340,7 @@
 
 .litegraph .dialog .dialog-content h3 {
   margin: 10px;
+  font-size: 16px;
 }
 
 .litegraph .dialog .dialog-content .connections {
@@ -338,19 +370,18 @@
   display: block;
   width: calc(100% - 4px);
   height: 1px;
-  border-top: 1px solid #000;
   border-bottom: 1px solid #333;
   margin: 10px 2px;
   padding: 0;
 }
-
-.litegraph .dialog .property {
-  margin-bottom: 2px;
-  padding: 4px;
+.litegraph .dialog .separator:last-child {
+  display: none;
 }
 
-.litegraph .dialog .property:hover {
-  background: #545454;
+.litegraph .dialog .property {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px;
 }
 
 .litegraph .dialog .property_name {
@@ -359,9 +390,12 @@
   text-align: left;
   vertical-align: top;
   width: 160px;
+  font-size: 14px;
   padding-left: 4px;
+  padding-top: 4px;
   overflow: hidden;
   margin-right: 6px;
+  transition: all 0.2s;
 }
 
 .litegraph .dialog .property:hover .property_name {
@@ -369,8 +403,9 @@
 }
 
 .litegraph .dialog .property_value {
-  display: inline-block;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   color: #aaa;
   background-color: #1a1a1a;
   /*width: calc( 100% - 122px );*/
@@ -378,11 +413,17 @@
   min-width: 200px;
   max-height: 300px;
   min-height: 20px;
+  font-size: 15px;
   padding: 4px;
   padding-right: 12px;
   overflow: hidden;
   cursor: pointer;
   border-radius: 3px;
+  outline: none;
+}
+
+.litegraph .dialog .property_value[contenteditable='true'] {
+  cursor: text;
 }
 
 .litegraph .dialog .property_value:hover {
@@ -404,12 +445,18 @@
 }
 
 .litegraph .dialog .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
   border: 0;
-  border-radius: 4px;
-  padding: 4px 20px;
-  margin-left: 0px;
-  background-color: #060606;
-  color: #8e8e8e;
+  border-radius: 3px;
+  background-color: #999;
+  color: black;
+  font-size: 13px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .litegraph .dialog .btn:hover {
@@ -417,9 +464,17 @@
   color: #fff;
 }
 
+.litegraph .dialog .btn.delete {
+  background-color: rgb(166 32 32);
+  color: rgb(255 255 255 / 95%);
+}
 .litegraph .dialog .btn.delete:hover {
-  background-color: #f33;
-  color: black;
+  background-color: rgb(187, 48, 48);
+  color: rgb(255 255 255 / 95%);
+}
+.litegraph .dialog .btn.delete:active {
+  background-color: rgb(134, 18, 18);
+  color: rgb(255 255 255 / 65%);
 }
 
 .litegraph .subgraph_property {
@@ -574,26 +629,13 @@
   min-height: 2em;
   background-color: #333;
   font-size: 1.2em;
-  box-shadow: 0 0 10px black !important;
+  box-shadow: 0px 5px 6px 0px rgb(0 0 0 / 25%);
   z-index: 10;
-}
-
-.graphdialog.rounded {
-  border-radius: 12px;
-  padding-right: 2px;
-}
-
-.graphdialog .name {
-  display: inline-block;
-  min-width: 60px;
-  min-height: 1.5em;
-  padding-left: 10px;
 }
 
 .graphdialog input,
 .graphdialog textarea,
 .graphdialog select {
-  margin: 3px;
   min-width: 60px;
   min-height: 1.5em;
   background-color: black;
@@ -601,6 +643,9 @@
   color: white;
   padding-left: 10px;
   outline: none;
+  font-size: 15px;
+  margin-right: 10px;
+  padding: 6px 10px;
 }
 
 .graphdialog textarea {
@@ -608,15 +653,25 @@
 }
 
 .graphdialog button {
-  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   vertical-align: top;
   background-color: #999;
   border: 0;
+  transition: all 0.2s;
+}
+.graphdialog button:hover {
+  background-color: #aaa;
+}
+.graphdialog button:active {
+  color: rgba(0, 0, 0, 0.75);
+  background-color: #8f8f8f;
 }
 
 .graphdialog button.rounded,
 .graphdialog input.rounded {
-  border-radius: 0 12px 12px 0;
+  border-radius: 3px;
 }
 
 .graphdialog .helper {
@@ -644,9 +699,7 @@
 .litegraph .dialog .dialog-content .subgraph_property {
   padding: 5px;
 }
-.litegraph .dialog .dialog-footer {
-  margin: 0;
-}
+
 .litegraph .dialog .dialog-footer .subgraph_property {
   margin-top: 0;
   display: flex;
@@ -658,29 +711,27 @@
 }
 .litegraph .graphdialog {
   display: flex;
-  align-items: center;
-  border-radius: 20px;
-  padding: 4px 10px;
   position: fixed;
+  align-items: center;
+  border-radius: 0 6px 6px 6px;
+  padding: 6px;
 }
 .litegraph .graphdialog .name {
-  padding: 0;
-  min-height: 0;
-  font-size: 16px;
-  vertical-align: middle;
-}
-.litegraph .graphdialog .value {
-  font-size: 16px;
-  min-height: 0;
-  margin: 0 10px;
-  padding: 2px 5px;
+  position: absolute;
+  top: 0;
+  font-size: 13px;
+  padding: 2px 8px;
+  color: rgb(255 255 255 / 60%);
+  border-radius: 3px 3px 0 0;
+  transform: translateY(-100%) translateX(-7px);
+  background: rgb(53 53 53);
 }
 .litegraph .graphdialog input[type='checkbox'] {
   width: 16px;
   height: 16px;
 }
 .litegraph .graphdialog button {
-  padding: 4px 18px;
-  border-radius: 20px;
+  padding: 6px 18px;
+  border-radius: 3px;
   cursor: pointer;
 }

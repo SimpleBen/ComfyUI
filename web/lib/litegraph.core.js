@@ -9018,8 +9018,7 @@ LGraphNode.prototype.executeAction = function(action)
           x = node._collapsed_width * 0.5
           y = 0
         }
-        ctx.fillStyle = '#686'
-        ctx.strokeStyle = 'black'
+        ctx.fillStyle = chroma(bgcolor).brighten(1).hex()
         ctx.beginPath()
         if (
           slot.type === LiteGraph.EVENT ||
@@ -9035,7 +9034,6 @@ LGraphNode.prototype.executeAction = function(action)
           ctx.arc(x, y, 4, 0, Math.PI * 2)
         }
         ctx.fill()
-        //ctx.stroke();
       }
     }
 
@@ -10371,7 +10369,7 @@ LGraphNode.prototype.executeAction = function(action)
             var delta = x < 40 ? -1 : x > widget_width - 40 ? 1 : 0
             if (event.click_time < 200 && delta == 0) {
               this.prompt(
-                'Value',
+                w.name,
                 w.value,
                 function (v) {
                   // check if v is a valid equation or a number
@@ -10410,7 +10408,7 @@ LGraphNode.prototype.executeAction = function(action)
         case 'text':
           if (event.type == LiteGraph.pointerevents_method + 'down') {
             this.prompt(
-              'Value',
+              w.name,
               w.value,
               function (v) {
                 inner_value_change(this, v)
@@ -11587,7 +11585,7 @@ LGraphNode.prototype.executeAction = function(action)
     dialog.is_modified = false
     dialog.className = 'graphdialog'
     dialog.innerHTML =
-      "<span class='name'></span><input autofocus type='text' class='value'/><button>OK</button>"
+      "<span class='name'></span><input autofocus type='text' class='value'/><button>确定</button>"
     dialog.close = function () {
       if (dialog.parentNode) {
         dialog.parentNode.removeChild(dialog)
@@ -11690,10 +11688,10 @@ LGraphNode.prototype.executeAction = function(action)
     dialog.className = 'graphdialog rounded'
     if (multiline)
       dialog.innerHTML =
-        "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>OK</button>"
+        "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>确定</button>"
     else
       dialog.innerHTML =
-        "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>OK</button>"
+        "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>确定</button>"
     dialog.close = function () {
       that.prompt_box = null
       if (dialog.parentNode) {
@@ -12483,7 +12481,7 @@ LGraphNode.prototype.executeAction = function(action)
         (info.label ? info.label : property) +
         '</span>' +
         input_html +
-        '<button>OK</button>',
+        '<button>确定</button>',
       options
     )
 
@@ -13029,22 +13027,21 @@ LGraphNode.prototype.executeAction = function(action)
     function inner_refresh() {
       panel.content.innerHTML = '' //clear
       panel.addHTML(
-        "<span class='node_type'>" +
-          node.type +
-          "</span><span class='node_desc'>" +
-          (node.constructor.desc || '') +
-          "</span><span class='separator'></span>"
+        // "<span class='node_type'>" +
+        //   node.type + "</span>" +
+        "<span class='node_desc'>" + (node.constructor.desc || '')
+        // + "</span><span class='separator'></span>"
       )
 
-      panel.addHTML('<h3>Properties</h3>')
+      panel.addHTML('<h3>属性</h3>')
 
       var fUpdate = function (name, value) {
         graphcanvas.graph.beforeChange(node)
         switch (name) {
-          case 'Title':
+          case '标题':
             node.title = value
             break
-          case 'Mode':
+          case '模式':
             var kV = Object.values(LiteGraph.NODE_MODES).indexOf(value)
             if (kV >= 0 && LiteGraph.NODE_MODES[kV]) {
               node.changeMode(kV)
@@ -13052,7 +13049,7 @@ LGraphNode.prototype.executeAction = function(action)
               console.warn('unexpected mode: ' + value)
             }
             break
-          case 'Color':
+          case '颜色':
             if (LGraphCanvas.node_colors[value]) {
               node.color = LGraphCanvas.node_colors[value].color
               node.bgcolor = LGraphCanvas.node_colors[value].bgcolor
@@ -13068,11 +13065,11 @@ LGraphNode.prototype.executeAction = function(action)
         graphcanvas.dirty_canvas = true
       }
 
-      panel.addWidget('string', 'Title', node.title, {}, fUpdate)
+      panel.addWidget('string', '标题', node.title, {}, fUpdate)
 
       panel.addWidget(
         'combo',
-        'Mode',
+        '模式',
         LiteGraph.NODE_MODES[node.mode],
         { values: LiteGraph.NODE_MODES },
         fUpdate
@@ -13087,7 +13084,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       panel.addWidget(
         'combo',
-        'Color',
+        '颜色',
         nodeCol,
         { values: Object.keys(LGraphCanvas.node_colors) },
         fUpdate
@@ -13114,7 +13111,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       panel.footer.innerHTML = '' // clear
       panel
-        .addButton('Delete', function () {
+        .addButton('删除节点', function () {
           if (node.block_delete) return
           node.graph.remove(node)
           panel.close()
@@ -13370,8 +13367,7 @@ LGraphNode.prototype.executeAction = function(action)
     var values = []
     values.push({
       value: null,
-      content:
-        "<span style='display: block; padding-left: 4px;'>No color</span>",
+      content: "<span class='color-pick color__default'>default</span>",
     })
 
     for (var i in LGraphCanvas.node_colors) {
@@ -13379,7 +13375,7 @@ LGraphNode.prototype.executeAction = function(action)
       var value = {
         value: i,
         content:
-          "<span style='display: block; color: #999; padding-left: 4px; border-left: 8px solid " +
+          "<span class='color-pick' style='border-left-color:" +
           color.color +
           '; background-color:' +
           color.bgcolor +
@@ -13810,18 +13806,18 @@ LGraphNode.prototype.executeAction = function(action)
           slot.output.links &&
           slot.output.links.length
         ) {
-          menu_info.push({ content: 'Disconnect Links', slot: slot })
+          menu_info.push({ content: '移除连接', slot: slot }) // Disconnect Links
         }
         var _slot = slot.input || slot.output
         if (_slot.removable) {
           menu_info.push(
             _slot.locked
-              ? 'Cannot remove'
-              : { content: 'Remove Slot', slot: slot }
+              ? '不能移除接口' // Cannot Remove
+              : { content: '移除接口', slot: slot } // Remove Slot
           )
         }
         if (!_slot.nameLocked) {
-          menu_info.push({ content: 'Rename Slot', slot: slot })
+          menu_info.push({ content: '重命名接口', slot: slot }) // Rename Slot
         }
       }
       options.title = (slot.input ? slot.input.type : slot.output.type) || '*'
@@ -13875,7 +13871,8 @@ LGraphNode.prototype.executeAction = function(action)
         }
         node.graph.afterChange()
         return
-      } else if (v.content == 'Disconnect Links') {
+      } else if (v.content == '移除连接') {
+        // Disconnect Links
         var info = v.slot
         node.graph.beforeChange()
         if (info.output) {
@@ -13885,13 +13882,13 @@ LGraphNode.prototype.executeAction = function(action)
         }
         node.graph.afterChange()
         return
-      } else if (v.content == 'Rename Slot') {
+      } else if (v.content == '重命名接口') {
         var info = v.slot
         var slot_info = info.input
           ? node.getInputInfo(info.slot)
           : node.getOutputInfo(info.slot)
         var dialog = that.createDialog(
-          "<span class='name'>Name</span><input autofocus type='text'/><button>OK</button>",
+          `<span class='name'>接口名</span><input placeholder="${slot_info.name}" autofocus type='text'/><button>确定</button>`,
           options
         )
         var input = dialog.querySelector('input')
