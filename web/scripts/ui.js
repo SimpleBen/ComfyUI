@@ -473,6 +473,7 @@ const LIST_ITEM_MAP = {
   queue: '队列',
   running: '正在运行',
   pending: '等待中',
+  cancel: '取消',
 }
 class ComfyList {
   #type
@@ -502,10 +503,17 @@ class ComfyList {
           ...(this.#reverse ? items[section].reverse() : items[section]).map(
             (item) => {
               // Allow items to specify a custom remove action (e.g. for interrupt current prompt)
-              const removeAction = item.remove || {
-                name: '删除',
-                cb: () => api.deleteItem(this.#type, item.prompt[1]),
-              }
+              const removeAction = item.remove
+                ? {
+                    ...item.remove,
+                    name:
+                      LIST_ITEM_MAP[item.remove.name.toLowerCase()] ??
+                      item.remove.name,
+                  }
+                : {
+                    name: '删除',
+                    cb: () => api.deleteItem(this.#type, item.prompt[1]),
+                  }
               return $el(
                 'div.comfy-list-item',
                 { textContent: item.prompt[0] + ': ' },
