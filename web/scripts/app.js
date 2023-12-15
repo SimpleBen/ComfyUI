@@ -1178,20 +1178,27 @@ export class ComfyApp {
 
       const nodeErrors = self.lastNodeErrors?.[node.id]
 
+      const colorMap = {
+        running: '#23873F',
+        error: '#D04F4F',
+        dragOver: 'dodgerblue',
+        executedError: '#D758DA',
+      }
+
       let color = null
       let lineWidth = 1
       if (node.id === +self.runningNodeId) {
-        color = '#0f0'
+        color = colorMap.running
       } else if (self.dragOverNode && node.id === self.dragOverNode.id) {
-        color = 'dodgerblue'
+        color = colorMap.dragOver
       } else if (nodeErrors?.errors) {
-        color = 'red'
+        color = colorMap.error
         lineWidth = 2
       } else if (
         self.lastExecutionError &&
         +self.lastExecutionError.node_id === node.id
       ) {
-        color = '#f0f'
+        color = colorMap.executedError
         lineWidth = 2
       }
 
@@ -1242,7 +1249,7 @@ export class ComfyApp {
       }
 
       if (self.progress && node.id === +self.runningNodeId) {
-        ctx.fillStyle = 'green'
+        ctx.fillStyle = colorMap.running
         ctx.fillRect(
           0,
           0,
@@ -1255,7 +1262,7 @@ export class ComfyApp {
       // Highlight inputs that failed validation
       if (nodeErrors) {
         ctx.lineWidth = 2
-        ctx.strokeStyle = 'red'
+        ctx.strokeStyle = colorMap.error
         for (const error of nodeErrors.errors) {
           if (error.extra_info && error.extra_info.input_name) {
             const inputIndex = node.findInputSlot(error.extra_info.input_name)
@@ -1291,7 +1298,7 @@ export class ComfyApp {
 
       if (node.mode === 4) {
         // never
-        node.bgcolor = '#FF00FF'
+        node.bgcolor = '#D758DA'
         this.editor_alpha = 0.2
       }
 

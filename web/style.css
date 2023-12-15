@@ -4,8 +4,8 @@
   --comfy-menu-bg: #353535;
   --comfy-input-bg: rgba(0, 0, 0, 0.2);
   --comfy-input-focus-bg: rgba(0, 0, 0, 0.25);
-  --comfy-input-hover-border: rgba(255, 255, 255, 0.02);
-  --comfy-input-focus-border: rgba(255, 255, 255, 0.08);
+  --comfy-input-hover-border: rgba(255, 255, 255, 0.06);
+  --comfy-input-focus-border: rgba(255, 255, 255, 0.14);
   --input-text: #ddd;
   --descrip-text: #999;
   --drag-text: #ccc;
@@ -73,14 +73,14 @@ body {
   line-height: 1.333;
   border-radius: 3px;
   transition-property: box-shadow, background-color;
-  transition-duration: 0.2s;
+  transition-duration: 0.1s;
 }
 .comfy-multiline-input:hover {
-  box-shadow: 0px 0px 0px 2px var(--comfy-input-hover-border);
+  box-shadow: 0px 0px 0px 1px var(--comfy-input-hover-border);
 }
 .comfy-multiline-input:focus {
   background-color: var(--comfy-input-focus-bg);
-  box-shadow: 0px 0px 0px 2px var(--comfy-input-focus-border);
+  box-shadow: 0px 0px 0px 1px var(--comfy-input-focus-border);
 }
 
 .comfy-modal {

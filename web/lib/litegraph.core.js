@@ -6588,10 +6588,45 @@ LGraphNode.prototype.executeAction = function(action)
 
         //Search for corner
         if (this.canvas) {
+          let widget_hovering = false
+          if (node.widgets) {
+            // MC::鼠标 Hover 在 Widget 上
+            const x = e.canvasX - node.pos[0]
+            const y = e.canvasY - node.pos[1]
+            const width = node.size[0]
+            for (let i = 0; i < node.widgets.length; ++i) {
+              let w = node.widgets[i]
+              if (!w || w.disabled) continue
+              const widget_height = w.computeSize
+                ? w.computeSize(width)[1]
+                : LiteGraph.NODE_WIDGET_HEIGHT
+              const widget_width = w.width || width
+              //outside
+              if (
+                x < 6 ||
+                x > widget_width - 12 ||
+                y < w.last_y ||
+                y > w.last_y + widget_height ||
+                w.last_y === undefined
+              ) {
+                w.hovering = false
+                continue
+              }
+              w.hovering = true
+              widget_hovering = true
+            }
+          }
+
           if (node.inResizeCorner(e.canvasX, e.canvasY)) {
             this.canvas.style.cursor = 'se-resize'
+          } else if (widget_hovering) {
+            this.canvas.style.cursor = this.pointer_is_down
+              ? 'ew-resize'
+              : 'pointer'
           } else {
-            this.canvas.style.cursor = 'crosshair'
+            this.canvas.style.cursor = this.pointer_is_down
+              ? 'grabbing'
+              : 'grab'
           }
         }
       } else {
@@ -6617,9 +6652,11 @@ LGraphNode.prototype.executeAction = function(action)
         if (over_link != this.over_link_center) {
           this.over_link_center = over_link
           this.dirty_canvas = true
+        } else {
+          this.canvas.style.cursor = 'pointer'
         }
 
-        if (this.canvas) {
+        if (this.canvas && !this.over_link_center) {
           this.canvas.style.cursor = ''
         }
       } //end
@@ -7975,6 +8012,7 @@ LGraphNode.prototype.executeAction = function(action)
         }
       }
 
+      // 绘制当前的 Connection
       //current connection (the one being dragged by the mouse)
       if (this.connecting_pos != null) {
         ctx.lineWidth = this.connections_width
@@ -8019,19 +8057,21 @@ LGraphNode.prototype.executeAction = function(action)
 
         ctx.beginPath()
         if (connType === LiteGraph.EVENT || connShape === LiteGraph.BOX_SHAPE) {
-          ctx.rect(
-            this.connecting_pos[0] - 6 + 0.5,
+          ctx.roundRect(
+            this.connecting_pos[0] - 6 - 1,
             this.connecting_pos[1] - 5 + 0.5,
             14,
-            10
+            10,
+            2
           )
           ctx.fill()
           ctx.beginPath()
-          ctx.rect(
-            this.graph_mouse[0] - 6 + 0.5,
+          ctx.roundRect(
+            this.graph_mouse[0] - 6 - 1,
             this.graph_mouse[1] - 5 + 0.5,
             14,
-            10
+            10,
+            2
           )
         } else if (connShape === LiteGraph.ARROW_SHAPE) {
           ctx.moveTo(this.connecting_pos[0] + 8, this.connecting_pos[1] + 0.5)
@@ -8048,13 +8088,13 @@ LGraphNode.prototype.executeAction = function(action)
           ctx.arc(
             this.connecting_pos[0],
             this.connecting_pos[1],
-            4,
+            5,
             0,
             Math.PI * 2
           )
           ctx.fill()
           ctx.beginPath()
-          ctx.arc(this.graph_mouse[0], this.graph_mouse[1], 4, 0, Math.PI * 2)
+          ctx.arc(this.graph_mouse[0], this.graph_mouse[1], 5, 0, Math.PI * 2)
         }
         ctx.fill()
 
@@ -8764,9 +8804,9 @@ LGraphNode.prototype.executeAction = function(action)
             slot.shape === LiteGraph.BOX_SHAPE
           ) {
             if (horizontal) {
-              ctx.rect(pos[0] - 5 + 0.5, pos[1] - 8 + 0.5, 10, 14)
+              ctx.roundRect(pos[0] - 5 - 1, pos[1] - 8 + 0.5, 10, 14, 2)
             } else {
-              ctx.rect(pos[0] - 6 + 0.5, pos[1] - 5 + 0.5, 14, 10)
+              ctx.roundRect(pos[0] - 6 - 1, pos[1] - 5 + 0.5, 14, 10, 2)
             }
           } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
             ctx.moveTo(pos[0] + 8, pos[1] + 0.5)
@@ -8786,7 +8826,7 @@ LGraphNode.prototype.executeAction = function(action)
             doStroke = false
           } else {
             if (low_quality) ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8) //faster
-            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2)
+            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2) // 修改圆尺寸
           }
           ctx.fill()
 
@@ -8855,9 +8895,9 @@ LGraphNode.prototype.executeAction = function(action)
             slot_shape === LiteGraph.BOX_SHAPE
           ) {
             if (horizontal) {
-              ctx.rect(pos[0] - 5 + 0.5, pos[1] - 8 + 0.5, 10, 14)
+              ctx.roundRect(pos[0] - 5 - 1, pos[1] - 8 + 0.5, 10, 14, 2)
             } else {
-              ctx.rect(pos[0] - 6 + 0.5, pos[1] - 5 + 0.5, 14, 10)
+              ctx.roundRect(pos[0] - 6 - 1, pos[1] - 5 + 0.5, 14, 10, 2)
             }
           } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
             ctx.moveTo(pos[0] + 8, pos[1] + 0.5)
@@ -8877,7 +8917,7 @@ LGraphNode.prototype.executeAction = function(action)
             doStroke = false
           } else {
             if (low_quality) ctx.rect(pos[0] - 4, pos[1] - 4, 8, 8)
-            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2)
+            else ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2) // 修改圆尺寸
           }
 
           //trigger
@@ -9009,7 +9049,7 @@ LGraphNode.prototype.executeAction = function(action)
   //used by this.over_link_center
   LGraphCanvas.prototype.drawLinkTooltip = function (ctx, link) {
     var pos = link._pos
-    ctx.fillStyle = 'black'
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
     ctx.beginPath()
     ctx.arc(pos[0], pos[1], 3, 0, Math.PI * 2)
     ctx.fill()
@@ -9772,6 +9812,7 @@ LGraphNode.prototype.executeAction = function(action)
       }
 
       //circle
+      // MC::连线之间的圆点
       ctx.beginPath()
       ctx.arc(pos[0], pos[1], 5, 0, Math.PI * 2)
       ctx.fill()
@@ -9905,6 +9946,7 @@ LGraphNode.prototype.executeAction = function(action)
     var outline_color = node.bgcolor
       ? chroma(node.bgcolor).brighten(0.3).hex()
       : LiteGraph.WIDGET_OUTLINE_COLOR
+
     var background_color = node.bgcolor
       ? chroma(node.bgcolor).darken(0.4).hex()
       : LiteGraph.WIDGET_BGCOLOR
@@ -9916,12 +9958,16 @@ LGraphNode.prototype.executeAction = function(action)
       var w = widgets[i]
       var y = posY
       const is_active = active_widget == w
+      const is_hover = !!w.hovering
+      const w_outline_color = is_hover
+        ? chroma(outline_color).brighten(0.8).hex()
+        : outline_color
 
       if (w.y) {
         y = w.y
       }
       w.last_y = y
-      ctx.strokeStyle = outline_color
+      ctx.strokeStyle = w_outline_color
       ctx.fillStyle = '#222'
       ctx.textAlign = 'left'
       //ctx.lineWidth = 2;
@@ -9951,20 +9997,26 @@ LGraphNode.prototype.executeAction = function(action)
           break
         case 'toggle':
           ctx.textAlign = 'left'
-          ctx.strokeStyle = outline_color
+          ctx.strokeStyle = w_outline_color
           ctx.fillStyle = background_color
           ctx.beginPath()
           if (show_text)
-            ctx.roundRect(margin, y, widget_width - margin * 2, H, [H * 0.5])
+            ctx.roundRect(
+              margin,
+              y,
+              widget_width - margin * 2,
+              H,
+              this.round_radius / 2
+            )
           else ctx.rect(margin, y, widget_width - margin * 2, H)
           ctx.fill()
           if (show_text && !w.disabled) ctx.stroke()
-          ctx.fillStyle = w.value ? '#89A' : '#333'
+          ctx.fillStyle = w.value ? '#438E4F' : '#444'
           ctx.beginPath()
           ctx.arc(
-            widget_width - margin * 2,
+            widget_width - margin * 2 - 2,
             y + H * 0.5,
-            H * 0.36,
+            H * 0.3,
             0,
             Math.PI * 2
           )
@@ -10031,7 +10083,7 @@ LGraphNode.prototype.executeAction = function(action)
         case 'number':
         case 'combo':
           ctx.textAlign = 'left'
-          ctx.strokeStyle = outline_color
+          ctx.strokeStyle = w_outline_color
           ctx.fillStyle = background_color
           ctx.beginPath()
           if (show_text)
@@ -10112,7 +10164,7 @@ LGraphNode.prototype.executeAction = function(action)
         case 'string':
         case 'text':
           ctx.textAlign = 'left'
-          ctx.strokeStyle = outline_color
+          ctx.strokeStyle = w_outline_color
           ctx.fillStyle = background_color
           ctx.beginPath()
           if (show_text)
