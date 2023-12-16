@@ -266,11 +266,13 @@ class ComfySettingsDialog extends ComfyDialog {
     options = undefined,
   }) {
     if (!id) {
-      throw new Error('Settings must have an ID')
+      throw new Error('设置项必须有唯一 ID')
     }
 
     if (this.settings.find((s) => s.id === id)) {
-      throw new Error(`Setting ${id} of type ${type} must have a unique ID.`)
+      throw new Error(
+        `类型 ${type} 中已经含有 ID 为 [${id}] 的设置项, ID 必须唯一.`
+      )
     }
 
     const settingId = `Comfy.Settings.${id}`
@@ -353,6 +355,8 @@ class ComfySettingsDialog extends ComfyDialog {
                       style: {
                         display: 'grid',
                         gridAutoFlow: 'column',
+                        alignItems: 'center',
+                        gap: '20px',
                       },
                     },
                     [
@@ -701,7 +705,7 @@ export class ComfyUI {
             onchange: (i) => {
               document.getElementById('extra-options').style.display = i
                 .srcElement.checked
-                ? 'block'
+                ? 'flex'
                 : 'none'
               this.batchCount = i.srcElement.checked
                 ? document.getElementById('batchCountInputRange').value
@@ -712,20 +716,22 @@ export class ComfyUI {
         ]),
       ]),
       $el('div', { id: 'extra-options', style: { display: 'none' } }, [
-        $el('div', [
-          $el('label', { innerHTML: '批量' }),
-          $el('input', {
-            id: 'batchCountInputNumber',
-            type: 'number',
-            value: this.batchCount,
-            min: '1',
-            style: { width: '35%', 'margin-left': '0.4em' },
-            oninput: (i) => {
-              this.batchCount = i.target.value
-              document.getElementById('batchCountInputRange').value =
-                this.batchCount
-            },
-          }),
+        $el('div.extra-options-item', [
+          $el('div', { style: { display: 'flex', 'align-item': 'center' } }, [
+            $el('label', { innerHTML: '批量' }),
+            $el('input', {
+              id: 'batchCountInputNumber',
+              type: 'number',
+              value: this.batchCount,
+              min: '1',
+              style: { width: '35%', 'margin-left': '0.4em' },
+              oninput: (i) => {
+                this.batchCount = i.target.value
+                document.getElementById('batchCountInputRange').value =
+                  this.batchCount
+              },
+            }),
+          ]),
           $el('input', {
             id: 'batchCountInputRange',
             type: 'range',
@@ -740,18 +746,23 @@ export class ComfyUI {
           }),
         ]),
 
-        $el('div', [
-          $el('label', {
-            for: 'autoQueueCheckbox',
-            innerHTML: '自动队列',
-            // textContent: "Auto Queue"
-          }),
-          $el('input', {
-            id: 'autoQueueCheckbox',
-            type: 'checkbox',
-            checked: false,
-            title: 'Automatically queue prompt when the queue size hits 0',
-          }),
+        $el('div.extra-options-item', [
+          $el(
+            'label',
+            {
+              for: 'autoQueueCheckbox',
+              innerHTML: '自动队列',
+              // textContent: "Auto Queue"
+            },
+            [
+              $el('input', {
+                id: 'autoQueueCheckbox',
+                type: 'checkbox',
+                checked: false,
+                title: '当队列大小为 0 时，自动将 Prompt 加入队列',
+              }),
+            ]
+          ),
         ]),
       ]),
       $el('div.comfy-menu-btns', [

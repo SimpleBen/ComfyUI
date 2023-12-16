@@ -284,28 +284,27 @@ export class ComfyLogging {
               for: htmlSettingId,
             }),
           ]),
-          $el('td', [
-            $el('input', {
-              id: htmlSettingId,
-              type: 'checkbox',
-              checked: value,
-              onchange: (event) => {
-                setter((this.enabled = event.target.checked))
-              },
-            }),
-            $el('button', {
-              textContent: '查看日志',
-              onclick: () => {
-                this.app.ui.settings.element.close()
-                this.dialog.show()
-              },
-              style: {
-                fontSize: '14px',
-                display: 'block',
-                marginTop: '5px',
-              },
-            }),
-          ]),
+          $el(
+            'td',
+            { style: { display: 'flex', alignItems: 'center', gap: '20px' } },
+            [
+              $el('input', {
+                id: htmlSettingId,
+                type: 'checkbox',
+                checked: value,
+                onchange: (event) => {
+                  setter((this.enabled = event.target.checked))
+                },
+              }),
+              $el('button', {
+                textContent: '查看日志',
+                onclick: () => {
+                  this.app.ui.settings.element.close()
+                  this.dialog.show()
+                },
+              }),
+            ]
+          ),
         ])
       },
     })

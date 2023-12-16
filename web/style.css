@@ -30,6 +30,7 @@
   }
 }
 
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 13px;
   height: 13px;
@@ -49,6 +50,202 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-thumb-hover-color);
+}
+
+/* Checkebox */
+input[type='checkbox'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  width: 28px;
+  height: 16px;
+  border-radius: 40px;
+  border: 1px solid var(--border-color);
+  background-color: var(--comfy-input-bg);
+  transition: all 0.2s;
+  cursor: pointer;
+  margin: 0;
+}
+input[type='checkbox']::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 3px;
+  border-radius: 10px;
+  background-color: var(--input-text);
+  transition: all 0.2s;
+  transform-origin: left;
+}
+
+input[type='checkbox']:active {
+  opacity: 0.9;
+}
+input[type='checkbox']:active::before {
+  width: 10px;
+  transform: translateX(1px);
+}
+
+input[type='checkbox']:checked {
+  border-color: var(--comfy--primary-color);
+  background-color: var(--comfy--primary-color);
+  transform-origin: right;
+}
+input[type='checkbox']:checked::before {
+  transform: translateX(12px);
+  box-shadow: 0 0 0 1px var(--input-text), 0 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+input[type='checkbox']:checked:active {
+  opacity: 0.9;
+}
+input[type='checkbox']:checked:active::before {
+  width: 10px;
+  transform: translateX(10px);
+}
+
+/* Range */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+}
+input[type='range']:disabled {
+  opacity: 0.3;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  transition: all 0.1s;
+  height: 4px;
+  background: var(--bg-color);
+  border-radius: 10px;
+}
+input[type='range' i]::-webkit-slider-container {
+  height: 20px;
+  overflow: hidden;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background-color: var(--comfy--primary-color);
+  border: 1px solid transparent;
+  margin-top: -5px;
+  border-image: linear-gradient(
+      var(--comfy--primary-color),
+      var(--comfy--primary-color)
+    )
+    0 fill / 4.5 13 4.5 0 / 0 0 0 2000px;
+}
+input[type='range']:hover::-webkit-slider-thumb {
+  filter: brightness(var(--brightness-hover));
+  cursor: ew-resize;
+}
+input[type='range']:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+}
+
+/* Button */
+button,
+input[type='button'] {
+  appearance: none;
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  color: var(--input-text);
+  background-color: var(--comfy-button-bg);
+  border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+button:hover,
+input[type='button']:hover {
+  filter: brightness(1.2);
+  background-color: var(--comfy-button-hover-bg);
+}
+button:active,
+input[type='button']:active {
+  filter: brightness(0.75);
+  background-color: var(--comfy-button-active-bg);
+}
+
+/* Select */
+select {
+  position: relative;
+  color: var(--input-text);
+  border-radius: 3px;
+  background-color: var(--comfy-input-bg);
+  border: none;
+  font-size: inherit;
+  padding: 6px;
+  transition: all 0.2s;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--border-color);
+  cursor: pointer;
+}
+select:hover {
+  box-shadow: 0 0 0 1px var(--border-hover-color);
+}
+select:focus {
+  box-shadow: 0 0 0 1px var(--border-hover-color);
+  background-color: var(--comfy-input-focus-bg);
+}
+option {
+  color: var(--input-text);
+  background-color: var(--bg-color);
+}
+
+/* Input Text */
+input:not([type]),
+input[type='number'],
+input[type='text'],
+textarea {
+  appearance: none;
+  -webkit-appearance: none;
+  color: var(--input-text);
+  border-radius: 3px;
+  background-color: var(--comfy-input-bg);
+  border: none;
+  font-size: inherit;
+  padding: 6px;
+  transition: all 0.2s;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+input[type='number'] {
+  text-align: center;
+}
+input:not([type]):hover,
+input[type='number']:hover,
+input[type='text']:hover,
+textarea:hover {
+  box-shadow: 0 0 0 1px var(--border-hover-color);
+}
+input:not([type]):focus,
+input[type='number']:focus,
+input[type='text']:focus,
+textarea:focus {
+  box-shadow: 0 0 0 1px var(--border-hover-color);
+  background-color: var(--comfy-input-focus-bg);
+}
+
+input[type='number']::-webkit-inner-spin-button {
+  display: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 body {
@@ -217,6 +414,9 @@ body {
   cursor: pointer;
   background-color: var(--comfy-button-hover-bg);
 }
+.comfy-settings-btn:hover {
+  background-color: unset;
+}
 .comfy-menu > button:active,
 .comfy-menu-btns button:active,
 .comfy-menu .comfy-list button:active,
@@ -260,19 +460,39 @@ body {
 }
 
 .comfy-menu > #extra-options {
+  position: relative;
+  flex-direction: column;
+  gap: 10px;
   font-size: 13px;
   margin-top: 10px;
-  padding: 5px;
-  box-sizing: border-box;
+  padding: 15px;
+  width: calc(100% - 10px);
 }
+.comfy-menu > #extra-options::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--comfy-menu-bg);
+  filter: brightness(0.85);
+  z-index: -1;
+}
+
 .comfy-menu > #extra-options-checkbox {
   margin-top: 10px;
 }
-.comfy-menu > #extra-options-checkbox label {
+.comfy-menu > #extra-options-checkbox label,
+.comfy-menu > #extra-options label {
   display: flex;
   align-items: center;
   font-size: 13px;
   gap: 5px;
+}
+
+.comfy-menu > #extra-options .extra-options-item {
+  font-size: 12px;
 }
 
 .comfy-list {
@@ -343,8 +563,10 @@ button.comfy-settings-btn {
   font-size: 12px;
   padding: 0;
   position: absolute;
+  top: 0;
   right: 0;
   border: none;
+  transition: all 0.2s;
 }
 
 .comfy-modal.comfy-settings,
@@ -640,4 +862,9 @@ dialog::backdrop {
 .litegraph.lite-search-item.generic_type {
   color: var(--input-text);
   filter: brightness(50%);
+}
+
+/* Extensions */
+#cm-manager-dialog {
+  padding-bottom: 80px;
 }
