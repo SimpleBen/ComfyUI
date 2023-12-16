@@ -14,7 +14,7 @@ const ext = {
       if (options?.className === 'dark' && values?.length > 10) {
         const filter = document.createElement('input')
         filter.classList.add('comfy-context-menu-filter')
-        filter.placeholder = 'Filter list'
+        filter.placeholder = '筛选...'
         this.root.prepend(filter)
 
         const items = Array.from(this.root.querySelectorAll('.litemenu-entry'))

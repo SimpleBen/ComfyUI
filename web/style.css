@@ -794,10 +794,10 @@ dialog::backdrop {
 .litegraph.litecontextmenu input {
   outline: none;
   border-radius: 3px;
-  border: 1px solid var(--border-color);
   background-color: var(--comfy-input-bg) !important;
   color: var(--input-text) !important;
   margin-top: 5px;
+  width: -webkit-fill-available;
   transition: all 0.2s;
 }
 .litegraph.litecontextmenu input:focus {
