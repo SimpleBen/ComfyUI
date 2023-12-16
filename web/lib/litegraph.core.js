@@ -6617,8 +6617,48 @@ LGraphNode.prototype.executeAction = function(action)
             }
           }
 
+          let is_over_interface = false
+          if (node.outputs) {
+            for (var i = 0, l = node.outputs.length; i < l; ++i) {
+              var link_pos = node.getConnectionPos(false, i)
+              if (
+                isInsideRectangle(
+                  e.canvasX,
+                  e.canvasY,
+                  link_pos[0] - 15,
+                  link_pos[1] - 10,
+                  30,
+                  20
+                )
+              ) {
+                is_over_interface = true
+                break
+              }
+            }
+          }
+          if (!is_over_interface && node.inputs) {
+            for (var i = 0, l = node.inputs.length; i < l; ++i) {
+              var link_pos = node.getConnectionPos(true, i)
+              if (
+                isInsideRectangle(
+                  e.canvasX,
+                  e.canvasY,
+                  link_pos[0] - 15,
+                  link_pos[1] - 10,
+                  30,
+                  20
+                )
+              ) {
+                is_over_interface = true
+                break
+              }
+            }
+          }
+
           if (node.inResizeCorner(e.canvasX, e.canvasY)) {
             this.canvas.style.cursor = 'se-resize'
+          } else if (is_over_interface || this.connecting_node) {
+            this.canvas.style.cursor = 'crosshair'
           } else if (widget_hovering) {
             this.canvas.style.cursor = this.pointer_is_down
               ? 'ew-resize'
@@ -6652,11 +6692,13 @@ LGraphNode.prototype.executeAction = function(action)
         if (over_link != this.over_link_center) {
           this.over_link_center = over_link
           this.dirty_canvas = true
+        } else if (this.connecting_node) {
+          this.canvas.style.cursor = 'crosshair'
         } else {
           this.canvas.style.cursor = 'pointer'
         }
 
-        if (this.canvas && !this.over_link_center) {
+        if (this.canvas && !this.over_link_center && !this.connecting_node) {
           this.canvas.style.cursor = ''
         }
       } //end
