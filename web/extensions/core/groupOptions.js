@@ -145,7 +145,7 @@ app.registerExtension({
       const contentMap = {
         nerver: '设置组内节点永不触发', // 'Set Group Nodes to Never'
         always: '设置组内节点总是触发', // 'Set Group Nodes to Always'
-        bypass: '设置组内节点绕过触发', // 'Bypass Group Nodes'
+        bypass: '设置组内节点跳过触发', // 'Bypass Group Nodes'
       }
       if (allNodesAreSameMode) {
         const mode = nodesInGroup[0].mode

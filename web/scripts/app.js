@@ -311,7 +311,7 @@ export class ComfyApp {
         if (img) {
           options.unshift(
             {
-              content: 'Open Image',
+              content: '打开图片',
               callback: () => {
                 let url = new URL(img.src)
                 url.searchParams.delete('preview')
@@ -319,7 +319,7 @@ export class ComfyApp {
               },
             },
             {
-              content: 'Save Image',
+              content: '保存图片',
               callback: () => {
                 const a = document.createElement('a')
                 let url = new URL(img.src)
@@ -339,7 +339,7 @@ export class ComfyApp {
       }
 
       options.push({
-        content: '绕过节点',
+        content: '跳过节点',
         callback: (obj) => {
           if (this.mode === 4) this.mode = 0
           else this.mode = 4
@@ -1320,7 +1320,7 @@ export class ComfyApp {
     })
 
     api.addEventListener('reconnecting', () => {
-      this.ui.dialog.show('Reconnecting...')
+      this.ui.dialog.show('正在重新连接...')
     })
 
     api.addEventListener('reconnected', () => {
@@ -1701,8 +1701,7 @@ export class ComfyApp {
     this.ui.dialog.show(
       $el('div.comfy-missing-nodes', [
         $el('span', {
-          textContent:
-            'When loading the graph, the following node types were not found: ',
+          textContent: '加载工作流时, 没有找到以下类型的节点:',
         }),
         $el(
           'ul',
@@ -1818,7 +1817,7 @@ export class ComfyApp {
       this.ui.dialog.show(
         $el('div', [
           $el('p', {
-            textContent: 'Loading aborted due to error reloading workflow data',
+            textContent: '由于重新加载工作流数据时出错，加载中止',
           }),
           $el('pre', {
             style: { padding: '5px', backgroundColor: 'rgba(255,0,0,0.2)' },
@@ -2059,7 +2058,7 @@ export class ComfyApp {
     const nodeId = error.node_id
     const nodeType = error.node_type
 
-    return `Error occurred when executing ${nodeType}:\n\n${error.exception_message}\n\n${traceback}`
+    return `运行节点： ${nodeType} 时发生错误:\n\n${error.exception_message}\n\n${traceback}`
   }
 
   async queuePrompt(number, batchCount = 1) {

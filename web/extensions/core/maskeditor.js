@@ -145,11 +145,8 @@ class MaskEditorDialog extends ComfyDialog {
     divElement.style.cssFloat = 'left'
     divElement.style.fontFamily = 'sans-serif'
     divElement.style.marginRight = '4px'
+    divElement.style.marginTop = '5px'
     divElement.style.color = 'var(--input-text)'
-    divElement.style.backgroundColor = 'var(--comfy-input-bg)'
-    divElement.style.borderRadius = '8px'
-    divElement.style.borderColor = 'var(--border-color)'
-    divElement.style.borderStyle = 'solid'
     divElement.style.fontSize = '15px'
     divElement.style.height = '21px'
     divElement.style.padding = '1px 6px'
@@ -163,6 +160,7 @@ class MaskEditorDialog extends ComfyDialog {
     self.brush_slider_input.setAttribute('value', '10')
     const labelElement = document.createElement('label')
     labelElement.textContent = name
+    labelElement.style.flexShrink = '0'
 
     divElement.appendChild(labelElement)
     divElement.appendChild(self.brush_slider_input)
@@ -203,13 +201,13 @@ class MaskEditorDialog extends ComfyDialog {
 
     this.brush_size_slider = this.createLeftSlider(
       self,
-      'Thickness',
+      '画笔大小',
       (event) => {
         self.brush_size = event.target.value
         self.updateBrushPreview(self, null, null)
       }
     )
-    var clearButton = this.createLeftButton('Clear', () => {
+    var clearButton = this.createLeftButton('清空', () => {
       self.maskCtx.clearRect(
         0,
         0,
@@ -217,13 +215,13 @@ class MaskEditorDialog extends ComfyDialog {
         self.maskCanvas.height
       )
     })
-    var cancelButton = this.createRightButton('Cancel', () => {
+    var cancelButton = this.createRightButton('取消', () => {
       document.removeEventListener('mouseup', MaskEditorDialog.handleMouseUp)
       document.removeEventListener('keydown', MaskEditorDialog.handleKeyDown)
       self.close()
     })
 
-    this.saveButton = this.createRightButton('Save', () => {
+    this.saveButton = this.createRightButton('保存', () => {
       document.removeEventListener('mouseup', MaskEditorDialog.handleMouseUp)
       document.removeEventListener('keydown', MaskEditorDialog.handleKeyDown)
       self.save()
@@ -306,9 +304,9 @@ class MaskEditorDialog extends ComfyDialog {
     document.addEventListener('keydown', MaskEditorDialog.handleKeyDown)
 
     if (ComfyApp.clipspace_return_node) {
-      this.saveButton.innerText = 'Save to node'
+      this.saveButton.innerText = '保存到节点'
     } else {
-      this.saveButton.innerText = 'Save'
+      this.saveButton.innerText = '保存'
     }
     this.saveButton.disabled = false
 

@@ -176,7 +176,7 @@ app.registerExtension({
 
       if (ComfyApp.clipspace) {
         ClipspaceDialog.instance.show()
-      } else app.ui.dialog.show('Clipspace is Empty!')
+      } else app.ui.dialog.show('剪贴板为空!')
     }
   },
 })

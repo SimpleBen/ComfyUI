@@ -113,8 +113,10 @@ input[type='range'] {
   overflow: hidden;
   width: 100%;
   cursor: pointer;
-  background-color: transparent;
+  background-color: transparent !important ;
   outline: none;
+  border: 0;
+  background: transparent;
 }
 input[type='range']:disabled {
   opacity: 0.3;

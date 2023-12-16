@@ -870,9 +870,9 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-clear-button',
-        textContent: '清除工作流',
+        textContent: '清空工作流',
         onclick: () => {
-          if (!confirmClear.value || confirm('Clear workflow?')) {
+          if (!confirmClear.value || confirm('确定要清空当前工作流吗？')) {
             app.clean()
             app.graph.clear()
           }
