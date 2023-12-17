@@ -311,7 +311,7 @@ export class ComfyApp {
         if (img) {
           options.unshift(
             {
-              content: '打开图片',
+              content: _t('Open Image'),
               callback: () => {
                 let url = new URL(img.src)
                 url.searchParams.delete('preview')
@@ -319,7 +319,7 @@ export class ComfyApp {
               },
             },
             {
-              content: '保存图片',
+              content: _t('Save Image'),
               callback: () => {
                 const a = document.createElement('a')
                 let url = new URL(img.src)
@@ -339,7 +339,7 @@ export class ComfyApp {
       }
 
       options.push({
-        content: '跳过节点',
+        content: _t('Bypass Node'),
         callback: (obj) => {
           if (this.mode === 4) this.mode = 0
           else this.mode = 4
@@ -350,7 +350,7 @@ export class ComfyApp {
       // prevent conflict of clipspace content
       if (!ComfyApp.clipspace_return_node) {
         options.push({
-          content: '复制', // Copy (Clipspace)
+          content: _t('Paste (Clipspace)'), // Copy (Clipspace)
           callback: (obj) => {
             ComfyApp.copyToClipspace(this)
           },
@@ -358,7 +358,7 @@ export class ComfyApp {
 
         if (ComfyApp.clipspace != null) {
           options.push({
-            content: '粘贴', // Paste (Clipspace)
+            content: _t('Paste (Clipspace)'), // Paste (Clipspace)
             callback: () => {
               ComfyApp.pasteFromClipspace(this)
             },
@@ -369,7 +369,7 @@ export class ComfyApp {
 
         if (ComfyApp.isImageNode(this)) {
           options.push({
-            content: '在 Mask 编辑器中打开',
+            content: _t('Open in MaskEditor'),
             callback: (obj) => {
               ComfyApp.copyToClipspace(this)
               ComfyApp.clipspace_return_node = this
@@ -1320,7 +1320,7 @@ export class ComfyApp {
     })
 
     api.addEventListener('reconnecting', () => {
-      this.ui.dialog.show('正在重新连接...')
+      this.ui.dialog.show(_t('Reconnecting...'))
     })
 
     api.addEventListener('reconnected', () => {
@@ -1701,7 +1701,9 @@ export class ComfyApp {
     this.ui.dialog.show(
       $el('div.comfy-missing-nodes', [
         $el('span', {
-          textContent: '加载工作流时, 没有找到以下类型的节点:',
+          textContent: _t(
+            'When loading the graph, the following node types were not found:'
+          ),
         }),
         $el(
           'ul',
@@ -1817,7 +1819,9 @@ export class ComfyApp {
       this.ui.dialog.show(
         $el('div', [
           $el('p', {
-            textContent: '由于重新加载工作流数据时出错，加载中止',
+            textContent: _t(
+              'Loading aborted due to error reloading workflow data'
+            ),
           }),
           $el('pre', {
             style: { padding: '5px', backgroundColor: 'rgba(255,0,0,0.2)' },
@@ -2058,7 +2062,14 @@ export class ComfyApp {
     const nodeId = error.node_id
     const nodeType = error.node_type
 
-    return `运行节点： ${nodeType} 时发生错误:\n\n${error.exception_message}\n\n${traceback}`
+    return _t(
+      'Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}',
+      {
+        node_type: nodeType,
+        exception_message: error.exception_message,
+        traceback,
+      }
+    )
   }
 
   async queuePrompt(number, batchCount = 1) {

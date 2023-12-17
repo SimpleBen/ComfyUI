@@ -2,17 +2,17 @@ import { app } from '../../scripts/app.js'
 
 const id = 'Comfy.LinkRenderMode'
 const LINK_MAP = {
-  Straight: '直线',
-  Linear: '线性',
-  Spline: '曲线',
-  Hidden: '隐藏',
+  Straight: _t('Straight'),
+  Linear: _t('Linear'),
+  Spline: _t('Spline'),
+  Hidden: _t('Hidden'),
 }
 const ext = {
   name: id,
   async setup(app) {
     app.ui.settings.addSetting({
       id,
-      name: '连线渲染模式',
+      name: _t('Link Render Mode'),
       defaultValue: 2,
       type: 'combo',
       options: [...LiteGraph.LINK_RENDER_MODES, 'Hidden'].map((m, i) => ({

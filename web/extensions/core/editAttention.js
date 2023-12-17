@@ -7,7 +7,7 @@ app.registerExtension({
   init() {
     const editAttentionDelta = app.ui.settings.addSetting({
       id: 'Comfy.EditAttention.Delta',
-      name: 'Ctrl+Up/Down 的调整精度',
+      name: _t('Ctrl+up/down precision'),
       type: 'slider',
       attrs: {
         min: 0.01,

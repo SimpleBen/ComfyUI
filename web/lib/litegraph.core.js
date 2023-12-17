@@ -10770,19 +10770,19 @@ LGraphNode.prototype.executeAction = function(action)
 
     for (const [_, node] of Object.entries(canvas.selected_nodes)) {
       switch (direction) {
-        case '右对齐':
+        case _t('Align Right'):
           node.pos[0] =
             boundaryNodes['right'].pos[0] +
             boundaryNodes['right'].size[0] -
             node.size[0]
           break
-        case '左对齐':
+        case _t('Align Left'):
           node.pos[0] = boundaryNodes['left'].pos[0]
           break
-        case '顶部对齐':
+        case _t('Align Top'):
           node.pos[1] = boundaryNodes['top'].pos[1]
           break
-        case '底部对齐':
+        case _t('Align Bottom'):
           node.pos[1] =
             boundaryNodes['bottom'].pos[1] +
             boundaryNodes['bottom'].size[1] -
@@ -10796,11 +10796,19 @@ LGraphNode.prototype.executeAction = function(action)
   }
 
   LGraphCanvas.onNodeAlign = function (value, options, event, prev_menu, node) {
-    new LiteGraph.ContextMenu(['顶部对齐', '底部对齐', '左对齐', '右对齐'], {
-      event: event,
-      callback: inner_clicked,
-      parentMenu: prev_menu,
-    })
+    new LiteGraph.ContextMenu(
+      [
+        _t('Align Top'),
+        _t('Align Bottom'),
+        _t('Align Left'),
+        _t('Align Right'),
+      ],
+      {
+        event: event,
+        callback: inner_clicked,
+        parentMenu: prev_menu,
+      }
+    )
 
     function inner_clicked(value) {
       LGraphCanvas.alignNodes(
@@ -10812,11 +10820,19 @@ LGraphNode.prototype.executeAction = function(action)
   }
 
   LGraphCanvas.onGroupAlign = function (value, options, event, prev_menu) {
-    new LiteGraph.ContextMenu(['顶部对齐', '底部对齐', '左对齐', '右对齐'], {
-      event: event,
-      callback: inner_clicked,
-      parentMenu: prev_menu,
-    })
+    new LiteGraph.ContextMenu(
+      [
+        _t('Align Top'),
+        _t('Align Bottom'),
+        _t('Align Left'),
+        _t('Align Right'),
+      ],
+      {
+        event: event,
+        callback: inner_clicked,
+        parentMenu: prev_menu,
+      }
+    )
 
     function inner_clicked(value) {
       LGraphCanvas.alignNodes(
@@ -11248,7 +11264,7 @@ LGraphNode.prototype.executeAction = function(action)
     )
       destType = node_right.inputs[link.target_slot].type
 
-    var options = ['添加节点', null, '移除', null]
+    var options = [_t('Add Node'), null, _t('Delete Node'), null]
 
     var menu = new LiteGraph.ContextMenu(options, {
       event: e,
@@ -11258,7 +11274,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     function inner_clicked(v, options, e) {
       switch (v) {
-        case '添加节点':
+        case _t('Add Node'):
           LGraphCanvas.onMenuAdd(null, null, e, menu, function (node) {
             // console.debug("node autoconnect");
             if (
@@ -11277,7 +11293,7 @@ LGraphNode.prototype.executeAction = function(action)
           })
           break
 
-        case '移除':
+        case _t('Delete Node'):
           that.graph.removeLink(link.id)
           break
         default:
@@ -11531,10 +11547,10 @@ LGraphNode.prototype.executeAction = function(action)
         return false
     }
 
-    var options = ['添加节点', null]
+    var options = [_t('Add Node'), null]
 
     if (that.allow_searchbox) {
-      options.push('搜索节点')
+      options.push(_t('Search Node'))
       options.push(null)
     }
 
@@ -11570,7 +11586,7 @@ LGraphNode.prototype.executeAction = function(action)
     function inner_clicked(v, options, e) {
       //console.log("Process showConnectionMenu selection");
       switch (v) {
-        case '添加节点':
+        case _t('Add Node'):
           LGraphCanvas.onMenuAdd(null, null, e, menu, function (node) {
             if (isFrom) {
               opts.nodeFrom.connectByType(iSlotConn, node, fromSlotType)
@@ -11579,7 +11595,7 @@ LGraphNode.prototype.executeAction = function(action)
             }
           })
           break
-        case '搜索节点':
+        case _t('Search Node'):
           if (isFrom) {
             that.showSearchBox(e, {
               node_from: opts.nodeFrom,
@@ -11626,8 +11642,9 @@ LGraphNode.prototype.executeAction = function(action)
     var dialog = document.createElement('div')
     dialog.is_modified = false
     dialog.className = 'graphdialog'
-    dialog.innerHTML =
-      "<span class='name'></span><input autofocus type='text' class='value'/><button>确定</button>"
+    dialog.innerHTML = `<span class='name'></span><input autofocus type='text' class='value'/><button>${_t(
+      'OK'
+    )}</button>`
     dialog.close = function () {
       if (dialog.parentNode) {
         dialog.parentNode.removeChild(dialog)
@@ -11729,11 +11746,13 @@ LGraphNode.prototype.executeAction = function(action)
     dialog.is_modified = false
     dialog.className = 'graphdialog rounded'
     if (multiline)
-      dialog.innerHTML =
-        "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>确定</button>"
+      dialog.innerHTML = `<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>${_t(
+        'OK'
+      )}</button>`
     else
-      dialog.innerHTML =
-        "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>确定</button>"
+      dialog.innerHTML = `<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>${_t(
+        'OK'
+      )}</button>`
     dialog.close = function () {
       that.prompt_box = null
       if (dialog.parentNode) {
@@ -11872,11 +11891,15 @@ LGraphNode.prototype.executeAction = function(action)
 
     var dialog = document.createElement('div')
     dialog.className = 'litegraph litesearchbox graphdialog rounded'
-    dialog.innerHTML =
-      "<span class='name'>搜索节点</span><input autofocus type='text' class='value rounded'/>"
+    dialog.innerHTML = `<span class='name'>${_t(
+      'Search Node'
+    )}</span><input autofocus type='text' class='value rounded'/>`
     if (options.do_type_filter) {
-      dialog.innerHTML +=
-        "<div class='litesearchbox-filter'><select class='slot_in_type_filter'><option value=''>未选择</option></select><select class='slot_out_type_filter'><option value=''>未选择</option></select></div>"
+      dialog.innerHTML += `<div class='litesearchbox-filter'><select class='slot_in_type_filter'><option value=''>${_t(
+        'Not selected'
+      )}/option></select><select class='slot_out_type_filter'><option value=''>${_t(
+        'Not selected'
+      )}</option></select></div>`
     }
     dialog.innerHTML += "<div class='helper'></div>"
 
@@ -12521,7 +12544,7 @@ LGraphNode.prototype.executeAction = function(action)
         (info.label ? info.label : property) +
         '</span>' +
         input_html +
-        '<button>确定</button>',
+        `<button>${_t('OK')}</button>`,
       options
     )
 
@@ -13073,15 +13096,15 @@ LGraphNode.prototype.executeAction = function(action)
         // + "</span><span class='separator'></span>"
       )
 
-      panel.addHTML('<h3>属性</h3>')
+      panel.addHTML(`<h3>${_t('Properties')}</h3>`)
 
       var fUpdate = function (name, value) {
         graphcanvas.graph.beforeChange(node)
         switch (name) {
-          case '标题':
+          case _t('Title'):
             node.title = value
             break
-          case '模式':
+          case _t('Mode'):
             var kV = Object.values(LiteGraph.NODE_MODES).indexOf(value)
             if (kV >= 0 && LiteGraph.NODE_MODES[kV]) {
               node.changeMode(kV)
@@ -13089,7 +13112,7 @@ LGraphNode.prototype.executeAction = function(action)
               console.warn('unexpected mode: ' + value)
             }
             break
-          case '颜色':
+          case _t('Color'):
             if (LGraphCanvas.node_colors[value]) {
               node.color = LGraphCanvas.node_colors[value].color
               node.bgcolor = LGraphCanvas.node_colors[value].bgcolor
@@ -13105,11 +13128,11 @@ LGraphNode.prototype.executeAction = function(action)
         graphcanvas.dirty_canvas = true
       }
 
-      panel.addWidget('string', '标题', node.title, {}, fUpdate)
+      panel.addWidget('string', _t('Title'), node.title, {}, fUpdate)
 
       panel.addWidget(
         'combo',
-        '模式',
+        _t('Mode'),
         LiteGraph.NODE_MODES[node.mode],
         { values: LiteGraph.NODE_MODES },
         fUpdate
@@ -13124,7 +13147,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       panel.addWidget(
         'combo',
-        '颜色',
+        _t('Color'),
         nodeCol,
         { values: Object.keys(LGraphCanvas.node_colors) },
         fUpdate
@@ -13151,7 +13174,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       panel.footer.innerHTML = '' // clear
       panel
-        .addButton('删除节点', function () {
+        .addButton(_t('Delete Node'), function () {
           if (node.block_delete) return
           node.graph.remove(node)
           panel.close()
@@ -13625,11 +13648,11 @@ LGraphNode.prototype.executeAction = function(action)
     } else {
       options = [
         {
-          content: '添加节点',
+          content: _t('Add Node'),
           has_submenu: true,
           callback: LGraphCanvas.onMenuAdd,
         },
-        { content: '添加组', callback: LGraphCanvas.onGroupAdd },
+        { content: _t('Add Group'), callback: LGraphCanvas.onGroupAdd },
         //{ content: "Arrange", callback: that.graph.arrange },
         //{content:"Collapse All", callback: LGraphCanvas.onMenuCollapseAll }
       ]
@@ -13639,7 +13662,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       if (Object.keys(this.selected_nodes).length > 1) {
         options.push({
-          content: '对齐方式',
+          content: _t('Align'),
           has_submenu: true,
           callback: LGraphCanvas.onGroupAlign,
         })
@@ -13647,7 +13670,7 @@ LGraphNode.prototype.executeAction = function(action)
 
       if (this._graph_stack && this._graph_stack.length > 0) {
         options.push(null, {
-          content: 'Close subgraph',
+          content: _t('Close subgraph'),
           callback: this.closeSubgraph.bind(this),
         })
       }
@@ -13685,49 +13708,49 @@ LGraphNode.prototype.executeAction = function(action)
         // },
         // null,
         {
-          content: '属性', // Properties
+          content: _t('Properties'),
           has_submenu: true,
           callback: LGraphCanvas.onShowMenuNodeProperties,
         },
         {
-          content: '属性面板', // Properties Panel
+          content: _t('Properties Panel'),
           callback: function (item, options, e, menu, node) {
             LGraphCanvas.active_canvas.showShowNodePanel(node)
           },
         },
         null,
         {
-          content: '设置标题', // Title
+          content: _t('Set Title'),
           callback: LGraphCanvas.onShowPropertyEditor,
         },
         {
-          content: '模式', // Mode
+          content: _t('Node Mode'), // Mode
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeMode,
         },
       ]
       if (node.resizable !== false) {
         options.push({
-          content: '重置尺寸', // Resize
+          content: _t('Resize Node'), // Resize
           callback: LGraphCanvas.onMenuResizeNode,
         })
       }
       options.push(
         {
-          content: '折叠节点', // Collapse
+          content: _t('Collapse Node'), // Collapse
           callback: LGraphCanvas.onMenuNodeCollapse,
         },
         {
-          content: '锁定节点', // Pin
+          content: _t('Pin Node'), // Pin
           callback: LGraphCanvas.onMenuNodePin,
         },
         {
-          content: '设置颜色', // Colors
+          content: _t('Node Colors'), // Colors
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeColors,
         },
         {
-          content: '节点形状', // Shapes
+          content: _t('Node Shapes'), // Shapes
           has_submenu: true,
           callback: LGraphCanvas.onMenuNodeShapes,
         },
@@ -13759,7 +13782,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     if (node.clonable !== false) {
       options.push({
-        content: '克隆节点',
+        content: _t('Clone Node'),
         callback: LGraphCanvas.onMenuNodeClone,
       })
     }
@@ -13767,20 +13790,20 @@ LGraphNode.prototype.executeAction = function(action)
     if (0)
       //TODO
       options.push({
-        content: '发送到 Subgraph',
+        content: _t('To Subgraph'),
         callback: LGraphCanvas.onMenuNodeToSubgraph,
       })
 
     if (Object.keys(this.selected_nodes).length > 1) {
       options.push({
-        content: '将所选内容对齐..',
+        content: _t('Align Selected To'),
         has_submenu: true,
         callback: LGraphCanvas.onNodeAlign,
       })
     }
 
     options.push(null, {
-      content: '移除节点',
+      content: _t('Remove Node'),
       disabled: !(node.removable !== false && !node.block_delete),
       callback: LGraphCanvas.onMenuNodeRemove,
     })
@@ -13794,20 +13817,23 @@ LGraphNode.prototype.executeAction = function(action)
 
   LGraphCanvas.prototype.getGroupMenuOptions = function (node) {
     var o = [
-      { content: '设置组标题', callback: LGraphCanvas.onShowPropertyEditor },
       {
-        content: '颜色',
+        content: _t('Group Title'),
+        callback: LGraphCanvas.onShowPropertyEditor,
+      },
+      {
+        content: _t('Group Color'),
         has_submenu: true,
         callback: LGraphCanvas.onMenuNodeColors,
       },
       {
-        content: '字体大小',
+        content: _t('Group Font size'),
         property: 'font_size',
         type: 'Number',
         callback: LGraphCanvas.onShowPropertyEditor,
       },
       null,
-      { content: '移除组', callback: LGraphCanvas.onMenuNodeRemove },
+      { content: _t('Group Remove'), callback: LGraphCanvas.onMenuNodeRemove },
     ]
 
     return o
@@ -13846,7 +13872,7 @@ LGraphNode.prototype.executeAction = function(action)
           slot.output.links &&
           slot.output.links.length
         ) {
-          menu_info.push({ content: '移除连接', slot: slot }) // Disconnect Links
+          menu_info.push({ content: _t('Disconnect Links'), slot: slot }) // Disconnect Links
         }
         var _slot = slot.input || slot.output
         if (_slot.removable) {
@@ -13877,10 +13903,10 @@ LGraphNode.prototype.executeAction = function(action)
         if (group) {
           //on group
           menu_info.push(null, {
-            content: '编辑组',
+            content: _t('Edit Group'),
             has_submenu: true,
             submenu: {
-              title: group.title || '组',
+              title: group.title || _t('Group'),
               extra: group,
               options: this.getGroupMenuOptions(group),
             },
@@ -13911,7 +13937,7 @@ LGraphNode.prototype.executeAction = function(action)
         }
         node.graph.afterChange()
         return
-      } else if (v.content == '移除连接') {
+      } else if (v.content == _t('Disconnect Links')) {
         // Disconnect Links
         var info = v.slot
         node.graph.beforeChange()
@@ -13922,13 +13948,15 @@ LGraphNode.prototype.executeAction = function(action)
         }
         node.graph.afterChange()
         return
-      } else if (v.content == '重命名接口') {
+      } else if (v.content == _t('Rename Slot')) {
         var info = v.slot
         var slot_info = info.input
           ? node.getInputInfo(info.slot)
           : node.getOutputInfo(info.slot)
         var dialog = that.createDialog(
-          `<span class='name'>接口名</span><input placeholder="${slot_info.name}" autofocus type='text'/><button>确定</button>`,
+          `<span class='name'>${_t('Slot Name')}</span><input placeholder="${
+            slot_info.name
+          }" autofocus type='text'/><button>${_t('OK')}</button>`,
           options
         )
         var input = dialog.querySelector('input')

@@ -893,7 +893,7 @@ export class GroupNodeHandler {
       if (optionIndex === -1) optionIndex = options.length
       else optionIndex++
       options.splice(optionIndex, 0, null, {
-        content: '转为节点', // Convert to nodes
+        content: _t('Convert to nodes'),
         callback: () => {
           return this.convertToNodes()
         },
@@ -1244,7 +1244,7 @@ function addConvertToGroupOptions() {
       selected.length < 2 ||
       selected.find((n) => GroupNodeHandler.isGroupNode(n))
     options.splice(index + 1, null, {
-      content: `转为组节点`, // Convert to Group Node
+      content: _t('Convert to Group Node'),
       disabled,
       callback: async () => {
         return await GroupNodeHandler.fromNodes(selected)

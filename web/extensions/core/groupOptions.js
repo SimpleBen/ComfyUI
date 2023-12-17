@@ -73,7 +73,7 @@ app.registerExtension({
       )
       if (!group) {
         options.push({
-          content: '为所选节点创建组', // 'Add Group For Selected Nodes',
+          content: _t('Add Group For Selected Nodes'),
           disabled: !Object.keys(app.canvas.selected_nodes || {}).length,
           callback: () => {
             var group = new LiteGraph.LGraphGroup()
@@ -91,7 +91,7 @@ app.registerExtension({
       const nodesInGroup = group._nodes
 
       options.push({
-        content: '将选中的节点加入到组', // 'Add Selected Nodes To Group'
+        content: _t('Add Selected Nodes To Group'),
         disabled: !Object.keys(app.canvas.selected_nodes || {}).length,
         callback: () => {
           addNodesToGroup(group, this.selected_nodes)
@@ -117,7 +117,7 @@ app.registerExtension({
       }
 
       options.push({
-        content: '根据子节点调整组尺寸', // 'Fit Group To Nodes',
+        content: _t('Fit Group To Nodes'),
         callback: () => {
           addNodesToGroup(group)
           this.graph.change()
@@ -125,7 +125,7 @@ app.registerExtension({
       })
 
       options.push({
-        content: '选择全部子节点', // 'Select Nodes',
+        content: _t('Select Nodes'),
         callback: () => {
           this.selectNodes(nodesInGroup)
           this.graph.change()
@@ -143,9 +143,9 @@ app.registerExtension({
       // 4: Bypass
       // If all nodes are the same mode, add a menu option to change the mode
       const contentMap = {
-        nerver: '设置组内节点永不触发', // 'Set Group Nodes to Never'
-        always: '设置组内节点总是触发', // 'Set Group Nodes to Always'
-        bypass: '设置组内节点跳过触发', // 'Bypass Group Nodes'
+        nerver: _t('Set Group Nodes to Never'),
+        always: _t('Set Group Nodes to Always'),
+        bypass: _t('Bypass Group Nodes'),
       }
       if (allNodesAreSameMode) {
         const mode = nodesInGroup[0].mode

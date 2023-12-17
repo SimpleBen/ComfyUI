@@ -674,7 +674,7 @@ app.registerExtension({
           $el('td', [
             $el('label', {
               for: id.replaceAll('.', '-'),
-              textContent: '主题风格',
+              textContent: _t('Color palette'),
             }),
           ]),
           $el('td', [
@@ -691,7 +691,7 @@ app.registerExtension({
               [
                 $el('input', {
                   type: 'button',
-                  value: '导出',
+                  value: _t('Export'),
                   onclick: async () => {
                     const colorPaletteId = app.ui.settings.getSettingValue(
                       id,
@@ -718,14 +718,14 @@ app.registerExtension({
                 }),
                 $el('input', {
                   type: 'button',
-                  value: '导入',
+                  value: _t('Import'),
                   onclick: () => {
                     fileInput.click()
                   },
                 }),
                 $el('input', {
                   type: 'button',
-                  value: '模板',
+                  value: _t('Template'),
                   onclick: async () => {
                     const colorPalette = await getColorPaletteTemplate()
                     const json = JSON.stringify(colorPalette, null, 2) // convert the data to a JSON string
@@ -746,7 +746,7 @@ app.registerExtension({
                 }),
                 $el('input', {
                   type: 'button',
-                  value: '删除',
+                  value: _t('Delete'),
                   onclick: async () => {
                     let colorPaletteId = app.ui.settings.getSettingValue(
                       id,
@@ -754,7 +754,7 @@ app.registerExtension({
                     )
 
                     if (colorPalettes[colorPaletteId]) {
-                      alert('不能删除内置的主题风格')
+                      alert(_t('You cannot delete a built-in color palette.'))
                       return
                     }
 

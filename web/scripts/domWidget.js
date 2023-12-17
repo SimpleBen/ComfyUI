@@ -210,7 +210,7 @@ let enableDomClipping = true
 export function addDomClippingSetting() {
   app.ui.settings.addSetting({
     id: 'Comfy.DOMClippingEnabled',
-    name: '启用 DOM 元素裁剪 (开启后可能会降低性能)',
+    name: _t('Enable DOM element clipping (enabling may reduce performance)'),
     type: 'boolean',
     defaultValue: enableDomClipping,
     onChange(value) {

@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="./lib/litegraph.css" />
     <link rel="stylesheet" type="text/css" href="./style.css" />
     <link rel="stylesheet" type="text/css" href="./user.css" />
+    <script type="text/javascript" src="./lib/i18n.js"></script>
     <script type="text/javascript" src="./lib/chroma.min.js"></script>
     <script type="text/javascript" src="./lib/litegraph.core.js"></script>
     <script
@@ -17,6 +18,9 @@
       src="./lib/litegraph.extensions.js"
       defer
     ></script>
+    <script type="module">
+      await loadTranslationFile(getLanguage())
+    </script>
     <script type="module">
       import { app } from './scripts/app.js'
       await app.setup()

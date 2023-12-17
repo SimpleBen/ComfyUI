@@ -123,7 +123,7 @@ function dragElement(dragEl, settings) {
   let savePos = undefined
   settings.addSetting({
     id: 'Comfy.MenuPosition',
-    name: '保存菜单栏的位置',
+    name: _t('Save menu position'),
     type: 'boolean',
     defaultValue: savePos,
     onChange(value) {
@@ -225,11 +225,11 @@ class ComfySettingsDialog extends ComfyDialog {
       },
       [
         $el('table.comfy-modal-content.comfy-table', [
-          $el('caption', { textContent: '设置' }),
+          $el('caption', { textContent: _t('Settings') }),
           $el('tbody', { $: (tbody) => (this.textElement = tbody) }),
           $el('button', {
             type: 'button',
-            textContent: '关闭',
+            textContent: _t('Close'),
             classList: ['comfy-modal-close'],
             style: {
               cursor: 'pointer',
@@ -266,13 +266,11 @@ class ComfySettingsDialog extends ComfyDialog {
     options = undefined,
   }) {
     if (!id) {
-      throw new Error('设置项必须有唯一 ID')
+      throw new Error('Settings must have an ID')
     }
 
     if (this.settings.find((s) => s.id === id)) {
-      throw new Error(
-        `类型 ${type} 中已经含有 ID 为 [${id}] 的设置项, ID 必须唯一.`
-      )
+      throw new Error(`Setting ${id} of type ${type} must have a unique ID.`)
     }
 
     const settingId = `Comfy.Settings.${id}`
@@ -473,11 +471,11 @@ class ComfySettingsDialog extends ComfyDialog {
 }
 
 const LIST_ITEM_MAP = {
-  history: '历史',
-  queue: '队列',
-  running: '正在运行',
-  pending: '等待中',
-  cancel: '取消',
+  history: _t('History'),
+  queue: _t('Queue'),
+  running: _t('Running'),
+  pending: _t('Pending'),
+  cancel: _t('Cancel'),
 }
 class ComfyList {
   #type
@@ -515,7 +513,7 @@ class ComfyList {
                       item.remove.name,
                   }
                 : {
-                    name: '删除',
+                    name: _t('Delete'),
                     cb: () => api.deleteItem(this.#type, item.prompt[1]),
                   }
               return $el(
@@ -523,7 +521,7 @@ class ComfyList {
                 { textContent: item.prompt[0] + ': ' },
                 [
                   $el('button', {
-                    textContent: '加载',
+                    textContent: _t('Load'),
                     onclick: async () => {
                       await app.loadGraphData(
                         item.prompt[3].extra_pnginfo.workflow
@@ -548,13 +546,16 @@ class ComfyList {
       ]),
       $el('div.comfy-list-actions', [
         $el('button', {
-          textContent: '清空' + this.#text,
+          textContent: _t('Clear {name}', { name: this.#text }),
           onclick: async () => {
             await api.clearItems(this.#type)
             await this.load()
           },
         }),
-        $el('button', { textContent: '刷新', onclick: () => this.load() }),
+        $el('button', {
+          textContent: _t('Refresh'),
+          onclick: () => this.load(),
+        }),
       ])
     )
   }
@@ -567,14 +568,14 @@ class ComfyList {
 
   async show() {
     this.element.style.display = 'block'
-    this.button.textContent = '关闭'
+    this.button.textContent = _t('Close')
 
     await this.load()
   }
 
   hide() {
     this.element.style.display = 'none'
-    this.button.textContent = '查看' + this.#text
+    this.button.textContent = _t('View') + this.#text
   }
 
   toggle() {
@@ -596,8 +597,8 @@ export class ComfyUI {
 
     this.batchCount = 1
     this.lastQueueSize = 0
-    this.queue = new ComfyList('队列', 'queue')
-    this.history = new ComfyList('历史', 'history', true)
+    this.queue = new ComfyList(_t('Queue'), 'queue')
+    this.history = new ComfyList(_t('History'), 'history', true)
 
     api.addEventListener('status', () => {
       this.queue.update()
@@ -606,14 +607,14 @@ export class ComfyUI {
 
     const confirmClear = this.settings.addSetting({
       id: 'Comfy.ConfirmClear',
-      name: '清空工作流时需要确认',
+      name: _t('Require confirmation when clearing workflow'),
       type: 'boolean',
       defaultValue: true,
     })
 
     const promptFilename = this.settings.addSetting({
       id: 'Comfy.PromptFilename',
-      name: '保存工作流程时提示输入文件名',
+      name: _t('Prompt for filename when saving workflow'),
       type: 'boolean',
       defaultValue: true,
     })
@@ -631,28 +632,30 @@ export class ComfyUI {
      */
     const previewImage = this.settings.addSetting({
       id: 'Comfy.PreviewFormat',
-      name: '在图像组件中显示预览时，将其转换为轻量级图像. 可填写如 webp、jpeg、webp;50 等参数',
+      name: _t(
+        'When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.'
+      ),
       type: 'text',
       defaultValue: '',
     })
 
     this.settings.addSetting({
       id: 'Comfy.DisableSliders',
-      name: '禁用滑块',
+      name: _t('Disable sliders.'),
       type: 'boolean',
       defaultValue: false,
     })
 
     this.settings.addSetting({
       id: 'Comfy.DisableFloatRounding',
-      name: 'Disable rounding floats (需要刷新页面).',
+      name: _t('Disable rounding floats (requires page reload).'),
       type: 'boolean',
       defaultValue: false,
     })
 
     this.settings.addSetting({
       id: 'Comfy.FloatRoundingPrecision',
-      name: '小数位数 [0 = 自动] (需要刷新页面).',
+      name: _t('Decimal places [0 = auto] (requires page reload).'),
       type: 'slider',
       attrs: {
         min: 0,
@@ -695,11 +698,11 @@ export class ComfyUI {
       ),
       $el('button.comfy-queue-btn', {
         id: 'queue-button',
-        textContent: '提交生成',
+        textContent: _t('Queue Prompt'),
         onclick: () => app.queuePrompt(0, this.batchCount),
       }),
       $el('div', { id: 'extra-options-checkbox' }, [
-        $el('label', { innerHTML: '额外选项' }, [
+        $el('label', { innerHTML: _t('Extra options') }, [
           $el('input', {
             type: 'checkbox',
             onchange: (i) => {
@@ -718,7 +721,7 @@ export class ComfyUI {
       $el('div', { id: 'extra-options', style: { display: 'none' } }, [
         $el('div.extra-options-item', [
           $el('div', { style: { display: 'flex', 'align-item': 'center' } }, [
-            $el('label', { innerHTML: '批量' }),
+            $el('label', { innerHTML: _t('Batch count') }),
             $el('input', {
               id: 'batchCountInputNumber',
               type: 'number',
@@ -751,7 +754,7 @@ export class ComfyUI {
             'label',
             {
               for: 'autoQueueCheckbox',
-              innerHTML: '自动队列',
+              innerHTML: _t('Auto Queue'),
               // textContent: "Auto Queue"
             },
             [
@@ -759,7 +762,9 @@ export class ComfyUI {
                 id: 'autoQueueCheckbox',
                 type: 'checkbox',
                 checked: false,
-                title: '当队列大小为 0 时，自动将 Prompt 加入队列',
+                title: _t(
+                  'Automatically queue prompt when the queue size hits 0.'
+                ),
               }),
             ]
           ),
@@ -768,13 +773,13 @@ export class ComfyUI {
       $el('div.comfy-menu-btns', [
         $el('button', {
           id: 'queue-front-button',
-          textContent: '优先生成',
+          textContent: _t('Queue Front'),
           onclick: () => app.queuePrompt(-1, this.batchCount),
         }),
         $el('button', {
           $: (b) => (this.queue.button = b),
           id: 'comfy-view-queue-button',
-          textContent: '查看队列',
+          textContent: _t('View Queue'),
           onclick: () => {
             this.history.hide()
             this.queue.toggle()
@@ -783,7 +788,7 @@ export class ComfyUI {
         $el('button', {
           $: (b) => (this.history.button = b),
           id: 'comfy-view-history-button',
-          textContent: '查看历史',
+          textContent: _t('View History'),
           onclick: () => {
             this.queue.hide()
             this.history.toggle()
@@ -794,11 +799,11 @@ export class ComfyUI {
       this.history.element,
       $el('button', {
         id: 'comfy-save-button',
-        textContent: '保存为 JSON',
+        textContent: _t('Save JSON'),
         onclick: () => {
           let filename = 'workflow.json'
           if (promptFilename.value) {
-            filename = prompt('保存工作流为:', filename)
+            filename = prompt(_t('Save workflow as:'), filename)
             if (!filename) return
             if (!filename.toLowerCase().endsWith('.json')) {
               filename += '.json'
@@ -824,7 +829,7 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-dev-save-api-button',
-        textContent: '保存为 JSON(API Format)',
+        textContent: _t('Save (API Format)'),
         style: { width: '100%', display: 'none' },
         onclick: () => {
           let filename = 'workflow_api.json'
@@ -855,22 +860,22 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-load-button',
-        textContent: '加载 JSON',
+        textContent: _t('Load JSON'),
         onclick: () => fileInput.click(),
       }),
       $el('button', {
         id: 'comfy-refresh-button',
-        textContent: '刷新数据',
+        textContent: _t('Refresh Data'),
         onclick: () => app.refreshComboInNodes(),
       }),
       $el('button', {
         id: 'comfy-clipspace-button',
-        textContent: '剪贴板',
+        textContent: _t('Clipspace'),
         onclick: () => app.openClipspace(),
       }),
       $el('button', {
         id: 'comfy-clear-button',
-        textContent: '清空工作流',
+        textContent: _t('Clear Workflow'),
         onclick: () => {
           if (!confirmClear.value || confirm('确定要清空当前工作流吗？')) {
             app.clean()
@@ -880,14 +885,9 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-load-default-button',
-        textContent: '加载默认工作流',
+        textContent: _t('Load Default Workflow'),
         onclick: async () => {
-          if (
-            !confirmClear.value ||
-            confirm(
-              '这个操作会清空当前的工作流，并加载默认工作流。确定要加载吗？'
-            )
-          ) {
+          if (!confirmClear.value || confirm(_t('Load default workflow?'))) {
             await app.loadGraphData()
           }
         },
@@ -896,7 +896,7 @@ export class ComfyUI {
 
     const devMode = this.settings.addSetting({
       id: 'Comfy.DevMode',
-      name: '开启 Dev 选项',
+      name: _t('Enable Dev mode Options'),
       type: 'boolean',
       defaultValue: false,
       onChange: function (value) {
@@ -911,8 +911,10 @@ export class ComfyUI {
   }
 
   setStatus(status) {
-    this.queueSize.textContent =
-      '队列中: ' + (status ? status.exec_info.queue_remaining : 'ERR')
+    this.queueSize.textContent = _t('Queue size: {size}', {
+      size: status ? status.exec_info.queue_remaining : 'ERR',
+    })
+
     if (status) {
       if (
         this.lastQueueSize != 0 &&

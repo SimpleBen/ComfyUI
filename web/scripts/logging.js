@@ -139,17 +139,17 @@ class ComfyLoggingDialog extends ComfyDialog {
     return [
       $el('button', {
         type: 'button',
-        textContent: '清空',
+        textContent: _t('Clear'),
         onclick: () => this.clear(),
       }),
       $el('button', {
         type: 'button',
-        textContent: '导出日志...',
+        textContent: _t('Export logs...'),
         onclick: () => this.export(),
       }),
       $el('button', {
         type: 'button',
-        textContent: '查看已导出的日志...',
+        textContent: _t('View exported logs...'),
         onclick: () => this.import(),
       }),
       ...super.createButtons(),
@@ -280,7 +280,7 @@ export class ComfyLogging {
         return $el('tr', [
           $el('td', [
             $el('label', {
-              textContent: '日志',
+              textContent: _t('Logging'),
               for: htmlSettingId,
             }),
           ]),
@@ -297,7 +297,7 @@ export class ComfyLogging {
                 },
               }),
               $el('button', {
-                textContent: '查看日志',
+                textContent: _t('View Logs'),
                 onclick: () => {
                   this.app.ui.settings.element.close()
                   this.dialog.show()
