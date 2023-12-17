@@ -672,16 +672,8 @@
   align-items: center;
   justify-content: center;
   vertical-align: top;
-  background-color: #999;
   border: 0;
   transition: all 0.2s;
-}
-.graphdialog button:hover {
-  background-color: #aaa;
-}
-.graphdialog button:active {
-  color: rgba(0, 0, 0, 0.75);
-  background-color: #8f8f8f;
 }
 
 .graphdialog button.rounded,

@@ -222,7 +222,7 @@ textarea {
   background-color: var(--comfy-input-bg);
   border: none;
   font-size: inherit;
-  padding: 6px;
+  padding: 4px 8px;
   transition: all 0.2s;
   outline: none;
   box-shadow: 0 0 0 1px var(--border-color);
@@ -631,21 +631,6 @@ button.comfy-settings-btn {
   background-color: var(--comfy-menu-bg);
   user-select: none;
   -webkit-user-select: none;
-}
-
-.graphdialog input,
-.graphdialog textarea,
-.graphdialog select {
-  background-color: var(--comfy-input-bg);
-  border: 1px solid var(--border-color);
-  color: var(--input-text);
-  border-radius: 3px;
-  transition: all 0.2s;
-}
-.graphdialog input:hover,
-.graphdialog textarea:hover,
-.graphdialog select:hover {
-  border-color: var(--border-hover-color);
 }
 
 /* Dialogs */
