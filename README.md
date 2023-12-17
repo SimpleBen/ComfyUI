@@ -1,13 +1,15 @@
 ComfyMC
 =======
-- 重构了 UI 和部分功能；汉化了一部分
+- 重构了 UI 和部分功能；汉化了一部分；增加了语言选择
 - 计划是把之前做的（[ComfyMC-Web](https://github.com/benis-me/ComfyMC-Web)）一些功能也弄进来
 
-![Preview 01](https://raw.githubusercontent.com/benis-me/TempFiles/main/1.png)
+- ![Language](https://raw.githubusercontent.com/benis-me/TempFiles/main/comfy_language.png)
 
-![Preview 02](https://raw.githubusercontent.com/benis-me/TempFiles/main/2.png)
+- ![Preview 01](https://raw.githubusercontent.com/benis-me/TempFiles/main/1.png)
 
-![Preview 03](https://raw.githubusercontent.com/benis-me/TempFiles/main/3.png)
+- ![Preview 02](https://raw.githubusercontent.com/benis-me/TempFiles/main/2.png)
+
+- ![Preview 03](https://raw.githubusercontent.com/benis-me/TempFiles/main/3.png)
 
 
 
