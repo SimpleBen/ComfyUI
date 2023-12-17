@@ -341,16 +341,17 @@ export class GroupNodeConfig {
   getInputConfig(node, inputName, seenInputs, config, extra) {
     let name =
       node.inputs?.find((inp) => inp.name === inputName)?.label ?? inputName
+    let key = name
     let prefix = ''
     // Special handling for primitive to include the title if it is set rather than just "value"
     if ((node.type === 'PrimitiveNode' && node.title) || name in seenInputs) {
       prefix = `${node.title ?? node.type} `
-      name = `${prefix}${inputName}`
+      key = name = `${prefix}${inputName}`
       if (name in seenInputs) {
         name = `${prefix}${seenInputs[name]} ${inputName}`
       }
     }
-    seenInputs[name] = (seenInputs[name] ?? 1) + 1
+    seenInputs[key] = (seenInputs[key] ?? 1) + 1
 
     if (inputName === 'seed' || inputName === 'noise_seed') {
       if (!extra) extra = {}
@@ -1125,12 +1126,15 @@ export class GroupNodeHandler {
           (w) => w.name === newName
         )
         const mainWidget = this.node.widgets[widgetIndex]
-        if (this.populatePrimitive(node, nodeId, oldName, i, linkedShift)) {
+        if (
+          this.populatePrimitive(node, nodeId, oldName, i, linkedShift) ||
+          widgetIndex === -1
+        ) {
           // Find the inner widget and shift by the number of linked widgets as they will have been removed too
           const innerWidget = this.innerNodes[nodeId].widgets?.find(
             (w) => w.name === oldName
           )
-          linkedShift += innerWidget.linkedWidgets?.length ?? 0
+          linkedShift += innerWidget?.linkedWidgets?.length ?? 0
         }
         if (widgetIndex === -1) {
           continue
