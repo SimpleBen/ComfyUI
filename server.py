@@ -143,6 +143,20 @@ class PromptServer():
                     name) + "/" + os.path.relpath(f, dir).replace("\\", "/"), files)))
 
             return web.json_response(extensions)
+        
+        @routes.get("/extensions/i18n")
+        async def get_i18n(request):
+            files = glob.glob(os.path.join(
+                glob.escape(self.web_root), 'extensions/**/i18n/*.json'), recursive=True)
+            
+            extensions = list(map(lambda f: "/" + os.path.relpath(f, self.web_root).replace("\\", "/"), files))
+            
+            for name, dir in nodes.EXTENSION_I18N_FILES.items():
+                files = glob.glob(os.path.join(glob.escape(dir), '*.json'), recursive=True)
+                extensions.extend(list(map(lambda f: "/extensions-i18n/" + urllib.parse.quote(
+                    name) + "/" + os.path.relpath(f, dir).replace("\\", "/"), files)))
+
+            return web.json_response(extensions)
 
         def get_dir_by_type(dir_type):
             if dir_type is None:
@@ -526,6 +540,11 @@ class PromptServer():
         for name, dir in nodes.EXTENSION_WEB_DIRS.items():
             self.app.add_routes([
                 web.static('/extensions/' + urllib.parse.quote(name), dir, follow_symlinks=True),
+            ])
+
+        for name, dir in nodes.EXTENSION_I18N_FILES.items():
+            self.app.add_routes([
+                web.static('/extensions-i18n/' + urllib.parse.quote(name), dir, follow_symlinks=True),
             ])
 
         self.app.add_routes([

@@ -27,12 +27,22 @@ function getLanguage() {
 async function loadTranslationFile(language) {
   if (!language) return
   try {
-    const res = await fetch(
-      location.pathname.split('/').slice(0, -1).join('/') +
-        `/i18n/${language}.json`
-    )
+    const api_base = location.pathname.split('/').slice(0, -1).join('/')
+    const res_i18n = await fetch(`${api_base}/i18n/${language}.json`)
+    translations = await res_i18n.json()
 
-    translations = await res.json()
+    // Extensions I18n
+    const res_ext = await fetch(`${api_base}/extensions/i18n`)
+    const exts = await res_ext.json()
+
+    for (const ext of exts) {
+      if (!ext) continue
+      if (!ext.includes(`${language}.json`)) continue
+
+      const res_ext_i18n = await fetch(`${api_base}${ext}`)
+      const ext_i18n = await res_ext_i18n.json()
+      Object.assign(translations, ext_i18n)
+    }
   } catch (error) {
     console.error('Error loading translation file:' + error)
   }
