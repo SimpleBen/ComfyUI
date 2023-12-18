@@ -194,7 +194,7 @@ export class ComfyDialog {
     return [
       $el('button', {
         type: 'button',
-        textContent: 'Close',
+        textContent: _t('Close'),
         onclick: () => this.close(),
       }),
     ]
