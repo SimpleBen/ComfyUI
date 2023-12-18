@@ -21,7 +21,8 @@ function _t(key, args) {
 }
 
 function getLanguage() {
-  return localStorage.getItem('Comfy.Settings.I18n').replaceAll(`"`, '') || 'zh'
+  const local = localStorage.getItem('Comfy.Settings.I18n')
+  return local ? local.replaceAll(`"`, '') : 'zh'
 }
 
 async function loadTranslationFile(language) {
