@@ -44,7 +44,7 @@ class ManageTemplates extends ComfyDialog {
 
   createButtons() {
     const btns = super.createButtons()
-    btns[0].textContent = 'Close'
+    btns[0].textContent = _t('Close')
     btns[0].onclick = (e) => {
       clearTimeout(this.saveVisualCue)
       this.close()
@@ -52,14 +52,14 @@ class ManageTemplates extends ComfyDialog {
     btns.unshift(
       $el('button', {
         type: 'button',
-        textContent: 'Export',
+        textContent: _t('Export'),
         onclick: () => this.exportAll(),
       })
     )
     btns.unshift(
       $el('button', {
         type: 'button',
-        textContent: 'Import',
+        textContent: _t('Import'),
         onclick: () => {
           this.importInput.click()
         },
@@ -107,7 +107,7 @@ class ManageTemplates extends ComfyDialog {
 
   exportAll() {
     if (this.templates.length == 0) {
-      alert('No templates to export.')
+      alert(_t('No templates to export.'))
       return
     }
 
@@ -199,7 +199,7 @@ class ManageTemplates extends ComfyDialog {
                 $el(
                   'label',
                   {
-                    textContent: 'Name: ',
+                    textContent: _t('Name') + ': ',
                     style: {
                       cursor: 'grab',
                     },
@@ -243,7 +243,7 @@ class ManageTemplates extends ComfyDialog {
                 ),
                 $el('div', {}, [
                   $el('button', {
-                    textContent: 'Export',
+                    textContent: _t('Export'),
                     style: {
                       fontSize: '12px',
                       fontWeight: 'normal',
@@ -268,7 +268,7 @@ class ManageTemplates extends ComfyDialog {
                     },
                   }),
                   $el('button', {
-                    textContent: 'Delete',
+                    textContent: _t('Delete'),
                     style: {
                       fontSize: '12px',
                       color: 'red',

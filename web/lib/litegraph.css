@@ -150,6 +150,7 @@
   padding: 0 !important;
   cursor: default !important;
 }
+.litegraph .litemenu-entry.separator:first-child,
 .litegraph .litemenu-entry.separator:last-child {
   display: none;
 }
@@ -653,7 +654,6 @@
 .graphdialog select {
   min-width: 60px;
   min-height: 1.5em;
-  background-color: black;
   border: 0;
   color: white;
   padding-left: 10px;

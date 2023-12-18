@@ -1,5 +1,5 @@
 {
-  "Convert to nodes": "转换为节点",
+  "Convert to nodes": "拆分为多个节点",
   "Convert to Group Node": "转换为组节点",
 
   "Add Group For Selected Nodes": "为所选节点创建组",
@@ -90,6 +90,8 @@
   "View": "查看",
   "Clear": "清空",
   "Clipspace": "剪贴板",
+  "Name": "名称",
+  "Removed": "移除",
 
   "Clear {name}": "清空 {name}",
   "Queue Prompt": "提交生成",
@@ -115,6 +117,7 @@
   "View Logs": "查看日志",
   "Grid Size": "画布网格大小",
   "Export logs...": "导出日志...",
+  "No templates to export.": "没有可导出的模板",
   "Language Setting": "语言设置 (需要重新加载页面)",
   "View exported logs...": "查看导出的日志...",
   "Enable Dev mode Options": "启用开发者选项",
@@ -136,5 +139,10 @@
   "Enable DOM element clipping (enabling may reduce performance)": "启用 DOM 元素裁剪 (启用可能会降低性能)",
   "When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.": "在图像组件中显示预览时，将其转换为轻量级图像. 可填写如 webp、jpeg、webp;50 等参数",
   "When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.": "当按住 Shift 的同时拖动节点并调整其尺寸时，它们将与网格对齐。本选项控制了该网格的尺寸",
-  "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}": "执行 {node_type} 时出错:\n\n{exception_message}\n\n{traceback}"
+  "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}": "执行 {node_type} 时出错:\n\n{exception_message}\n\n{traceback}",
+
+  "Enter group name": "输入组名称",
+  "Remove from workflow": "从工作流中移除",
+  "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "这个名称的组节点已经存在于工作流中，确定要覆盖它吗？",
+  "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.": "这个名称的组节点已经存在于工作流中，无法覆盖，请删除任何实例或使用一个新名称"
 }

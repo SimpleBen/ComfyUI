@@ -11897,7 +11897,7 @@ LGraphNode.prototype.executeAction = function(action)
     if (options.do_type_filter) {
       dialog.innerHTML += `<div class='litesearchbox-filter'><select class='slot_in_type_filter'><option value=''>${_t(
         'Not selected'
-      )}/option></select><select class='slot_out_type_filter'><option value=''>${_t(
+      )}</option></select><select class='slot_out_type_filter'><option value=''>${_t(
         'Not selected'
       )}</option></select></div>`
     }

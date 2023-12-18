@@ -89,6 +89,8 @@
   "View": "View",
   "Clear": "Clear",
   "Clipspace": "Clipspace",
+  "Name": "Name",
+  "Removed": "Removed",
 
   "Clear {name}": "Clear {name}",
   "Queue Prompt": "Queue Prompt",
@@ -114,6 +116,7 @@
   "View Logs": "View Logs",
   "Grid Size": "Grid Size",
   "Export logs...": "Export logs...",
+  "No templates to export.": "No templates to export.",
   "Language Setting": "Language (requires page reload)",
   "View exported logs...": "View exported logs...",
   "Enable Dev mode Options": "Enable Dev mode Options",
@@ -135,5 +138,10 @@
   "Enable DOM element clipping (enabling may reduce performance)": "Enable DOM element clipping (enabling may reduce performance)",
   "When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.": "When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.",
   "When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.": "When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.",
-  "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}": "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}"
+  "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}": "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}",
+
+  "Enter group name": "Enter group name",
+  "Remove from workflow": "Remove from workflow",
+  "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?",
+  "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.": "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name."
 }

@@ -51,19 +51,19 @@ class GroupNodeBuilder {
   }
 
   getName() {
-    const name = prompt('Enter group name')
+    const name = prompt(_t('Enter group name'))
     if (!name) return
     const used = Workflow.isInUseGroupNode(name)
     switch (used) {
       case Workflow.InUse.InWorkflow:
         alert(
-          'An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.'
+          _t('An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.')
         )
         return
       case Workflow.InUse.Registered:
         if (
           !confirm(
-            'An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?'
+            _t('An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?')
           )
         ) {
           return
@@ -610,10 +610,10 @@ export class GroupNodeConfig {
           missingNodeTypes.push({
             type: 'workflow/' + g,
             action: {
-              text: 'Remove from workflow',
+              text: _t('Remove from workflow'),
               callback: (e) => {
                 delete groupNodes[g]
-                e.target.textContent = 'Removed'
+                e.target.textContent = _t('Removed')
                 e.target.style.pointerEvents = 'none'
                 e.target.style.opacity = 0.7
               },
@@ -889,7 +889,7 @@ export class GroupNodeHandler {
     this.node.getExtraMenuOptions = function (_, options) {
       getExtraMenuOptions?.apply(this, arguments)
 
-      let optionIndex = options.findIndex((o) => o.content === 'Outputs')
+      let optionIndex = options.findIndex((o) => o?.content === 'Outputs')
       if (optionIndex === -1) optionIndex = options.length
       else optionIndex++
       options.splice(optionIndex, 0, null, {
