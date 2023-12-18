@@ -707,7 +707,8 @@ dialog::backdrop {
   border: 1px solid var(--border-color);
   box-sizing: border-box;
   border-radius: 6px;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 210px);
   box-shadow: 0 10px 20px -5px rgb(0 0 0 / 50%);
 }
 
