@@ -10,5 +10,8 @@ module.exports = async function () {
 
 	HTMLCanvasElement.prototype.getContext = nop;
 
+	const { _t } = require('./utils/i18n');
+	global._t = _t;
+
 	localStorage["Comfy.Settings.Comfy.Logging.Enabled"] = "false";
 };
