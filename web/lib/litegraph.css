@@ -141,8 +141,7 @@
 
 .litegraph .litemenu-entry.separator {
   display: block;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--comfy-menu-border);
   width: 100%;
   height: 0px;
   margin: 3px 0 3px 0;
@@ -161,12 +160,12 @@
 
 .litegraph .litemenu-title {
   color: rgb(236, 236, 236);
-  background-color: #1c1c1c;
+  background-color: rgb(0 0 0 / 30%);
   margin: 0;
   padding: 3px 6px;
   cursor: default;
   font-weight: bold;
-  border-radius: 2px 2px 0 0;
+  border-radius: 4px 4px 1px 1px !important;
 }
 
 .litegraph .litemenu-entry:hover:not(.disabled):not(.separator) {

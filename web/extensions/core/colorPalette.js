@@ -84,7 +84,7 @@ const colorPalettes = {
         DEFAULT_GROUP_FONT: 24,
 
         WIDGET_BGCOLOR: '#D4D4D4',
-        WIDGET_OUTLINE_COLOR: '#999',
+        WIDGET_OUTLINE_COLOR: '#9f9f9f',
         WIDGET_TEXT_COLOR: '#222',
         WIDGET_SECONDARY_TEXT_COLOR: '#555',
 
@@ -93,10 +93,12 @@ const colorPalettes = {
         CONNECTING_LINK_COLOR: '#2196F3',
       },
       comfy_base: {
+        'comfy-primary-color': '#fecd46',
         'fg-color': '#222',
         'bg-color': '#DDD',
         'comfy-menu-bg': '#F5F5F5',
-        'comfy-input-bg': '#C9C9C9',
+        'comfy-input-bg': 'rgb(243 243 243 / 50%)',
+        'comfy-button-bg': 'rgb(0 0 0 / 12%)',
         'input-text': '#222',
         'descrip-text': '#444',
         'drag-text': '#555',
@@ -149,12 +151,16 @@ const colorPalettes = {
         CONNECTING_LINK_COLOR: '#859900', // Solarized Green
       },
       comfy_base: {
+        'comfy-primary-color': '#ed3f61',
         'fg-color': '#fdf6e3', // Base3
         'bg-color': '#002b36', // Base03
         'comfy-menu-bg': '#073642', // Base02
         'comfy-input-bg': '#002b36', // Base03
-        'input-text': '#93a1a1', // Base1
-        'descrip-text': '#586e75', // Base01
+        'comfy-input-bg': 'rgb(0 0 0 / 50%)',
+        'comfy-button-bg': 'rgb(0 0 0 / 12%)',
+        'comfy-menu-border': 'rgb(39 127 149 / 40%)',
+        'input-text': '#fff', // Base1
+        'descrip-text': '#9bb4bc', // Base01
         'drag-text': '#839496', // Base0
         'error-text': '#dc322f', // Solarized Red
         'border-color': '#657b83', // Base00

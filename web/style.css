@@ -1,7 +1,7 @@
 :root {
   --fg-color: #fff;
   --bg-color: #202020;
-  --comfy--primary-color: #4646ba;
+  --comfy-primary-color: #4646ba;
   --comfy-menu-bg: #353535;
   --comfy-menu-border: #4e4e4e;
   --comfy-input-bg: rgba(0, 0, 0, 0.2);
@@ -89,8 +89,8 @@ input[type='checkbox']:active::before {
 }
 
 input[type='checkbox']:checked {
-  border-color: var(--comfy--primary-color);
-  background-color: var(--comfy--primary-color);
+  border-color: var(--comfy-primary-color);
+  background-color: var(--comfy-primary-color);
   transform-origin: right;
 }
 input[type='checkbox']:checked::before {
@@ -141,12 +141,12 @@ input[type='range']::-webkit-slider-thumb {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  background-color: var(--comfy--primary-color);
+  background-color: var(--comfy-primary-color);
   border: 1px solid transparent;
   margin-top: -5px;
   border-image: linear-gradient(
-      var(--comfy--primary-color),
-      var(--comfy--primary-color)
+      var(--comfy-primary-color),
+      var(--comfy-primary-color)
     )
     0 fill / 4.5 13 4.5 0 / 0 0 0 2000px;
 }
@@ -460,7 +460,7 @@ body {
   padding: 12px 14px;
   width: 100%;
   margin-top: 10px;
-  background: var(--comfy--primary-color);
+  background: var(--comfy-primary-color);
 }
 
 .comfy-menu > #extra-options {
