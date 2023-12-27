@@ -139,6 +139,7 @@
   "When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.": "When displaying a preview in the image widget, convert it to a lightweight image, e.g. webp, jpeg, webp;50, etc.",
   "When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.": "When dragging and resizing nodes while holding shift they will be aligned to the grid, this controls the size of that grid.",
   "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}": "Error occurred when executing {node_type}:\n\n{exception_message}\n\n{traceback}",
+  "Nodes that have failed to load will show as red on the graph.": "Nodes that have failed to load will show as red on the graph.",
 
   "Enter group name": "Enter group name",
   "Remove from workflow": "Remove from workflow",

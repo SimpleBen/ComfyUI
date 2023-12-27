@@ -1737,8 +1737,9 @@ export class ComfyApp {
         ...(hasAddedNodes
           ? [
               $el('span', {
-                textContent:
-                  'Nodes that have failed to load will show as red on the graph.',
+                textContent: _t(
+                  'Nodes that have failed to load will show as red on the graph.'
+                ),
               }),
             ]
           : []),
