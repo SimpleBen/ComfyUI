@@ -370,7 +370,7 @@ app.registerExtension({
       })
 
       subItems.push(null, {
-        content: _t('Manage'),
+        content: _t('Manage Templates'),
         callback: () => manage.show(),
       })
 

@@ -224,8 +224,9 @@ app.registerExtension({
       getExtraMenuOptions(_, options) {
         options.unshift(
           {
-            content:
-              (this.properties.showOutputText ? 'Hide' : 'Show') + ' Type',
+            content: _t(
+              (this.properties.showOutputText ? 'Hide' : 'Show') + ' Type'
+            ),
             callback: () => {
               this.properties.showOutputText = !this.properties.showOutputText
               if (this.properties.showOutputText) {
@@ -239,9 +240,10 @@ app.registerExtension({
             },
           },
           {
-            content:
+            content: _t(
               (RerouteNode.defaultVisibility ? 'Hide' : 'Show') +
-              ' Type By Default',
+                ' Type By Default'
+            ),
             callback: () => {
               RerouteNode.setDefaultTextVisibility(
                 !RerouteNode.defaultVisibility
@@ -253,8 +255,9 @@ app.registerExtension({
             // LiteGraphNode.horizontal == true means that
             // each slot in the inputs and outputs are layed out horizontally,
             // which is the opposite of the visual orientation of the inputs and outputs as a node
-            content:
-              'Set ' + (this.properties.horizontal ? 'Horizontal' : 'Vertical'),
+            content: _t(
+              'Set ' + (this.properties.horizontal ? 'Horizontal' : 'Vertical')
+            ),
             callback: () => {
               this.properties.horizontal = !this.properties.horizontal
               this.applyOrientation()

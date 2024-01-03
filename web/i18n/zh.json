@@ -65,6 +65,13 @@
   "Align Top": "顶部对齐",
   "Align Bottom": "底部对齐",
 
+  "Show Type": "显示类型",
+  "Hide Type": "隐藏类型",
+  "Show Type By Default": "默认显示类型",
+  "Hide Type By Default": "默认隐藏类型",
+  "Set Vertical": "设置垂直连线",
+  "Set Horizontal": "设置水平连线",
+
   "OK": "确定",
   "Title": "标题",
   "Mode": "模式",

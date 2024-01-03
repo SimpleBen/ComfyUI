@@ -64,6 +64,13 @@
   "Align Top": "top",
   "Align Bottom": "bottom",
 
+  "Show Type": "Show Type",
+  "Hide Type": "Hide Type",
+  "Show Type By Default": "Show Type By Default",
+  "Hide Type By Default": "Hide Type By Default",
+  "Set Vertical": "Set Vertical",
+  "Set Horizontal": "Set Horizontal",
+
   "OK": "OK",
   "Title": "Title",
   "Mode": "Mode",

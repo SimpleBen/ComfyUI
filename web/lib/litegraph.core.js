@@ -8786,7 +8786,7 @@ LGraphNode.prototype.executeAction = function(action)
 
     //draw shape
     if (node.has_errors) {
-      bgcolor = 'red'
+      bgcolor = '#ac2921'
     }
     this.drawNodeShape(
       node,
