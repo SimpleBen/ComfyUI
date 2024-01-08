@@ -6256,7 +6256,7 @@ LGraphNode.prototype.executeAction = function(action)
               this.dragging_rectangle = null
             }
 
-            var dist = distance(
+            const dist = distance(
               [e.canvasX, e.canvasY],
               [
                 this.selected_group.pos[0] + this.selected_group.size[0],
@@ -6271,9 +6271,40 @@ LGraphNode.prototype.executeAction = function(action)
           }
 
           if (is_double_click && !this.read_only && this.allow_searchbox) {
-            this.showSearchBox(e)
-            e.preventDefault()
-            e.stopPropagation()
+            // group header
+            let isdbclick_group_header = false
+            if (this.selected_group && !this.selected_group_resizing) {
+              const font_size =
+                this.selected_group.font_size ||
+                LiteGraph.DEFAULT_GROUP_FONT_SIZE
+              const height = font_size * 1.6
+
+              if (
+                LiteGraph.isInsideRectangle(
+                  e.canvasX,
+                  e.canvasY,
+                  this.selected_group.pos[0],
+                  this.selected_group.pos[1],
+                  this.selected_group.size[0],
+                  height
+                )
+              ) {
+                LGraphCanvas.onShowPropertyEditor(
+                  {},
+                  {},
+                  {},
+                  {},
+                  this.selected_group
+                )
+                isdbclick_group_header = true
+              }
+            }
+
+            if (!isdbclick_group_header) {
+              this.showSearchBox(e)
+              e.preventDefault()
+              e.stopPropagation()
+            }
           }
 
           clicking_canvas_bg = true
