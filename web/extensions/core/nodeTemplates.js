@@ -1,4 +1,5 @@
 import { app } from '../../scripts/app.js'
+import { api } from '../../scripts/api.js'
 import { ComfyDialog, $el } from '../../scripts/ui.js'
 import { GroupNodeConfig, GroupNodeHandler } from './groupNode.js'
 
@@ -24,8 +25,11 @@ const id = 'Comfy.NodeTemplates'
 class ManageTemplates extends ComfyDialog {
   constructor() {
     super()
+    this.load().then((v) => {
+      this.templates = v
+    })
+
     this.element.classList.add('comfy-manage-templates')
-    this.templates = this.load()
     this.draggedEl = null
     this.saveVisualCue = null
     this.emptyImg = new Image()
@@ -80,20 +84,64 @@ class ManageTemplates extends ComfyDialog {
   store() {
     localStorage.setItem(id, JSON.stringify(this.templates))
   }
+  async load() {
+    let templates = []
+    if (app.storageLocation === 'server') {
+      if (app.isNewUserSession) {
+        // New user so migrate existing templates
+        const json = localStorage.getItem(id)
+        if (json) {
+          templates = JSON.parse(json)
+        }
+        await api.storeUserData(file, json, { stringify: false })
+      } else {
+        const res = await api.getUserData(file)
+        if (res.status === 200) {
+          try {
+            templates = await res.json()
+          } catch (error) {}
+        } else if (res.status !== 404) {
+          console.error(res.status + ' ' + res.statusText)
+        }
+      }
+    } else {
+      const json = localStorage.getItem(id)
+      if (json) {
+        templates = JSON.parse(json)
+      }
+    }
+
+    return templates ?? []
+  }
+
+  async store() {
+    if (app.storageLocation === 'server') {
+      const templates = JSON.stringify(this.templates, undefined, 4)
+      localStorage.setItem(id, templates) // Backwards compatibility
+      try {
+        await api.storeUserData(file, templates, { stringify: false })
+      } catch (error) {
+        console.error(error)
+        alert(error.message)
+      }
+    } else {
+      localStorage.setItem(id, JSON.stringify(this.templates))
+    }
+  }
 
   async importAll() {
     for (const file of this.importInput.files) {
       if (file.type === 'application/json' || file.name.endsWith('.json')) {
         const reader = new FileReader()
         reader.onload = async () => {
-          var importFile = JSON.parse(reader.result)
-          if (importFile && importFile?.templates) {
+          const importFile = JSON.parse(reader.result)
+          if (importFile?.templates) {
             for (const template of importFile.templates) {
               if (template?.name && template?.data) {
                 this.templates.push(template)
               }
             }
-            this.store()
+            await this.store()
           }
         }
         await reader.readAsText(file)
@@ -161,6 +209,26 @@ class ManageTemplates extends ComfyDialog {
                   e.currentTarget.removeAttribute('draggable')
 
                   // rearrange the elements in the localStorage
+                  this.element
+                    .querySelectorAll('.tempateManagerRow')
+                    .forEach((el, i) => {
+                      var prev_i = el.dataset.id
+
+                      if (el == this.draggedEl && prev_i != i) {
+                        this.templates.splice(
+                          i,
+                          0,
+                          this.templates.splice(prev_i, 1)[0]
+                        )
+                      }
+                      el.dataset.id = i
+                    })
+                  this.store()
+                },
+                ondragover: (e) => {
+                  e.preventDefault()
+                  if (e.currentTarget == this.draggedEl) return
+                  // rearrange the elements
                   this.element
                     .querySelectorAll('.tempateManagerRow')
                     .forEach((el, i) => {

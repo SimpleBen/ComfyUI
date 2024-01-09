@@ -390,6 +390,7 @@ body {
   width: 100%;
 }
 
+.comfy-btn,
 .comfy-menu > button,
 .comfy-menu-btns button,
 .comfy-menu .comfy-list button,
@@ -414,6 +415,7 @@ body {
   margin-top: 6px;
 }
 
+.comfy-btn:hover:not(:disabled),
 .comfy-menu > button:hover,
 .comfy-menu-btns button:hover,
 .comfy-menu .comfy-list button:hover,
