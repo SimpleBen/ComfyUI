@@ -601,6 +601,55 @@ export class ComfyUI {
       }),
     ])
 
+    this.userSelection = $el(
+      'div.comfy-user-selection',
+      {
+        id: 'comfy-user-selection',
+        style: { display: 'none' },
+        parent: document.body,
+      },
+      [
+        $el('main.comfy-user-selection-inner', {}, [
+          $el('h1', { textContent: _t('ComfyUI') }),
+          $el('form', {}, [
+            $el('section', {}, [
+              $el('label', {}, [
+                $el('span', { textContent: _t('New User') }),
+                $el('input', {
+                  type: 'text',
+                  placeholder: _t('Enter a username'),
+                }),
+              ]),
+            ]),
+            $el('div.comfy-user-existing', {}, [
+              $el('span.or-separator', { textContent: _t('OR') }),
+              $el('section', {}, [
+                $el('label', {}, [
+                  $el('span', { textContent: _t('Existing User') }),
+                  $el('select', {}, [
+                    $el('option', {
+                      hidden: true,
+                      selected: true,
+                      disabled: true,
+                      value: '',
+                      textContent: _t('Select a user'),
+                    }),
+                  ]),
+                ]),
+              ]),
+            ]),
+
+            $el('footer', {}, [
+              $el('span.comfy-user-error', { textContent: '' }),
+              $el('button.comfy-btn.comfy-user-button-next', {
+                textContent: _t('Next'),
+              }),
+            ]),
+          ]),
+        ]),
+      ]
+    )
+
     const devMode = this.settings.addSetting({
       id: 'Comfy.DevMode',
       name: _t('Enable Dev mode Options'),

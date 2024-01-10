@@ -11,7 +11,7 @@ const ext = {
     const language = localStorage.getItem('ComfyUI.I18n') || 'zh'
     app.ui.settings.addSetting({
       id,
-      name: _t('Language'),
+      name: _t('Language Setting'),
       defaultValue: 'zh',
       type: 'combo',
       options: ['zh', 'en'].map((m) => ({

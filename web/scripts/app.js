@@ -1501,7 +1501,7 @@ export class ComfyApp {
 
     this.ui.settings.addSetting({
       id: 'Comfy.SwitchUser',
-      name: 'Switch User',
+      name: _t('Switch User'),
       type: (name) => {
         let currentUser = localStorage['Comfy.userName']
         if (currentUser) {
