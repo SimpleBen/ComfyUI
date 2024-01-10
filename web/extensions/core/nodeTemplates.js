@@ -21,6 +21,7 @@ import { GroupNodeConfig, GroupNodeHandler } from './groupNode.js'
 // Open the manage dialog and Drag and drop elements using the "Name:" label as handle
 
 const id = 'Comfy.NodeTemplates'
+const file = 'comfy.templates.json'
 
 class ManageTemplates extends ComfyDialog {
   constructor() {
