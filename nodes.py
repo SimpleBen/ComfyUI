@@ -1821,7 +1821,7 @@ def load_custom_node(module_path, ignore=set()):
 
         if hasattr(module, "I18N_DIRECTORY") and getattr(module, "I18N_DIRECTORY") is not None:
             i18n_dir = os.path.abspath(os.path.join(module_dir, getattr(module, "I18N_DIRECTORY")))
-            if os.path.isdir(web_dir):
+            if os.path.isdir(i18n_dir):
                 EXTENSION_I18N_FILES[module_name] = i18n_dir
 
         if hasattr(module, "NODE_CLASS_MAPPINGS") and getattr(module, "NODE_CLASS_MAPPINGS") is not None:
