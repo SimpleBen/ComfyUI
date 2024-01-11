@@ -4720,8 +4720,6 @@
       num_slots = this.outputs.length
     }
 
-    var offset = LiteGraph.NODE_SLOT_HEIGHT * 0.5
-
     if (this.flags.collapsed) {
       var w = this._collapsed_width || LiteGraph.NODE_COLLAPSED_WIDTH
       if (this.horizontal) {
@@ -4785,6 +4783,12 @@
       this.pos[1] +
       (slot_number + 0.7) * LiteGraph.NODE_SLOT_HEIGHT +
       (this.constructor.slot_start_y || 0)
+
+    // 没有 Title 的 Node, slot 上移 4.5
+    if (this.constructor.title_mode === LiteGraph.NO_TITLE) {
+      out[1] = out[1] - 4.5
+    }
+
     return out
   }
 
