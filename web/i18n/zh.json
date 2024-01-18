@@ -1,6 +1,7 @@
 {
-  "Convert to nodes": "拆分为多个节点",
+  "Convert to Nodes": "拆分为多个节点",
   "Convert to Group Node": "转换为组节点",
+  "Manage Group Nodes": "管理组节点",
 
   "Add Group For Selected Nodes": "为所选节点创建组",
   "Add Selected Nodes To Group": "将所选节点添加到组",

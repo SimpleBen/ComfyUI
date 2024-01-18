@@ -52,19 +52,23 @@ class GroupNodeBuilder {
   }
 
   getName() {
-    const name = prompt('Enter group name')
+    const name = prompt(_t('Enter group name'))
     if (!name) return
     const used = Workflow.isInUseGroupNode(name)
     switch (used) {
       case Workflow.InUse.InWorkflow:
         alert(
-          'An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.'
+          _t(
+            'An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.'
+          )
         )
         return
       case Workflow.InUse.Registered:
         if (
           !confirm(
-            'A group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?'
+            _t(
+              'An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?'
+            )
           )
         ) {
           return
@@ -945,13 +949,13 @@ export class GroupNodeHandler {
         0,
         null,
         {
-          content: 'Convert to nodes',
+          content: _t('Convert to Nodes'),
           callback: () => {
             return this.convertToNodes()
           },
         },
         {
-          content: 'Manage Group Node',
+          content: _t('Manage Group Nodes'),
           callback: () => {
             new ManageGroupDialog(app).show(this.type)
           },
