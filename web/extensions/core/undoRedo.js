@@ -183,11 +183,3 @@ LiteGraph.ContextMenu.prototype.close = function (e) {
   checkState()
   return v
 }
-
-// Handle litegraph context menu for COMBO widgets
-const close = LiteGraph.ContextMenu.prototype.close
-LiteGraph.ContextMenu.prototype.close = function (e) {
-  const v = close.apply(this, arguments)
-  checkState()
-  return v
-}

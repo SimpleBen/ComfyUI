@@ -163,6 +163,6 @@
 
   "Enter group name": "Enter group name",
   "Remove from workflow": "Remove from workflow",
-  "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?",
+  "A group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "A group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?",
   "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.": "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name."
 }

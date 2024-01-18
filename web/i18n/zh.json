@@ -119,6 +119,11 @@
   "Reconnecting...": "正在重新连接...",
   "Filter list": "筛选...",
 
+  "instant": "即时",
+  "change": "变化",
+  "A new prompt will be queued as soon as the queue reaches 0": "当队列大小为 0 时，将自动提交生成",
+  "A new prompt will be queued when the queue is at 0 and the graph is/has changed": "当队列大小为 0 且工作流发生变化时，将自动提交生成",
+
   "OR": "或",
   "New User": "新用户",
   "Enter a username": "输入用户名",
@@ -164,6 +169,6 @@
 
   "Enter group name": "输入组名称",
   "Remove from workflow": "从工作流中移除",
-  "An group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "这个名称的组节点已经存在于工作流中，确定要覆盖它吗？",
+  "A group node with this name already exists embedded in this workflow, are you sure you want to overwrite it?": "这个名称的组节点已经存在于工作流中，确定要覆盖它吗？",
   "An in use group node with this name already exists embedded in this workflow, please remove any instances or use a new name.": "这个名称的组节点已经存在于工作流中，无法覆盖，请删除任何实例或使用一个新名称"
 }
