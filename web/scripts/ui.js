@@ -1,9 +1,23 @@
 import { api } from './api.js'
 import { ComfyDialog as _ComfyDialog } from './ui/dialog.js'
+import { toggleSwitch } from './ui/toggleSwitch.js'
 import { ComfySettingsDialog } from './ui/settings.js'
 
 export const ComfyDialog = _ComfyDialog
 
+/**
+ *
+ * @param { string } tag HTML Element Tag and optional classes e.g. div.class1.class2
+ * @param { string | Element | Element[] | {
+ * 	 parent?: Element,
+ *   $?: (el: Element) => void,
+ *   dataset?: DOMStringMap,
+ *   style?: CSSStyleDeclaration,
+ * 	 for?: string
+ * } | undefined } propsOrChildren
+ * @param { Element[] | undefined } [children]
+ * @returns
+ */
 export function $el(tag, propsOrChildren, children) {
   const split = tag.split('.')
   const element = document.createElement(split.shift())
@@ -12,6 +26,11 @@ export function $el(tag, propsOrChildren, children) {
   }
 
   if (propsOrChildren) {
+    if (typeof propsOrChildren === 'string') {
+      propsOrChildren = { textContent: propsOrChildren }
+    } else if (propsOrChildren instanceof Element) {
+      propsOrChildren = [propsOrChildren]
+    }
     if (Array.isArray(propsOrChildren)) {
       element.append(...propsOrChildren)
     } else {
@@ -35,7 +54,7 @@ export function $el(tag, propsOrChildren, children) {
 
       Object.assign(element, propsOrChildren)
       if (children) {
-        element.append(...children)
+        element.append(...(children instanceof Array ? children : [children]))
       }
 
       if (parent) {
@@ -362,7 +381,7 @@ export class ComfyUI {
 
     this.settings.addSetting({
       id: 'Comfy.FloatRoundingPrecision',
-      name: _t('Decimal places [0 = auto] (requires page reload).'),
+      name: 'Decimal places [0 = auto] (requires page reload).',
       type: 'slider',
       attrs: {
         min: 0,
@@ -381,6 +400,41 @@ export class ComfyUI {
       onchange: () => {
         app.handleFile(fileInput.files[0])
       },
+    })
+
+    const autoQueueModeEl = toggleSwitch(
+      'autoQueueMode',
+      [
+        {
+          text: 'instant',
+          tooltip: _t(
+            'A new prompt will be queued as soon as the queue reaches 0'
+          ),
+        },
+        {
+          text: 'change',
+          tooltip: _t(
+            'A new prompt will be queued when the queue is at 0 and the graph is/has changed'
+          ),
+        },
+      ],
+      {
+        onChange: (value) => {
+          this.autoQueueMode = value.item.value
+        },
+      }
+    )
+    autoQueueModeEl.style.display = 'none'
+
+    api.addEventListener('graphChanged', () => {
+      if (this.autoQueueMode === 'change') {
+        if (this.lastQueueSize === 0) {
+          this.graphHasChanged = false
+          app.queuePrompt(0, this.batchCount)
+        } else {
+          this.graphHasChanged = true
+        }
+      }
     })
 
     this.menuContainer = $el('div.comfy-menu', { parent: document.body }, [
@@ -405,30 +459,33 @@ export class ComfyUI {
       ),
       $el('button.comfy-queue-btn', {
         id: 'queue-button',
-        textContent: _t('Queue Prompt'),
+        textContent: 'Queue Prompt',
         onclick: () => app.queuePrompt(0, this.batchCount),
       }),
-      $el('div', { id: 'extra-options-checkbox' }, [
-        $el('label', { innerHTML: _t('Extra options') }, [
+      $el('div', {}, [
+        $el('label', { innerHTML: 'Extra options' }, [
           $el('input', {
             type: 'checkbox',
             onchange: (i) => {
-              document.getElementById('extra-options').style.display = i
+              document.getElementById('extraOptions').style.display = i
                 .srcElement.checked
-                ? 'flex'
+                ? 'block'
                 : 'none'
               this.batchCount = i.srcElement.checked
                 ? document.getElementById('batchCountInputRange').value
                 : 1
               document.getElementById('autoQueueCheckbox').checked = false
+              this.autoQueueEnabled = false
             },
           }),
         ]),
       ]),
-      $el('div', { id: 'extra-options', style: { display: 'none' } }, [
-        $el('div.extra-options-item', [
-          $el('div', { style: { display: 'flex', 'align-item': 'center' } }, [
-            $el('label', { innerHTML: _t('Batch count') }),
+      $el(
+        'div',
+        { id: 'extraOptions', style: { width: '100%', display: 'none' } },
+        [
+          $el('div', [
+            $el('label', { innerHTML: 'Batch count' }),
             $el('input', {
               id: 'batchCountInputNumber',
               type: 'number',
@@ -441,52 +498,52 @@ export class ComfyUI {
                   this.batchCount
               },
             }),
+            $el('input', {
+              id: 'batchCountInputRange',
+              type: 'range',
+              min: '1',
+              max: '100',
+              value: this.batchCount,
+              oninput: (i) => {
+                this.batchCount = i.srcElement.value
+                document.getElementById('batchCountInputNumber').value =
+                  i.srcElement.value
+              },
+            }),
           ]),
-          $el('input', {
-            id: 'batchCountInputRange',
-            type: 'range',
-            min: '1',
-            max: '100',
-            value: this.batchCount,
-            oninput: (i) => {
-              this.batchCount = i.srcElement.value
-              document.getElementById('batchCountInputNumber').value =
-                i.srcElement.value
-            },
-          }),
-        ]),
 
-        $el('div.extra-options-item', [
-          $el(
-            'label',
-            {
+          $el('div', [
+            $el('label', {
               for: 'autoQueueCheckbox',
-              innerHTML: _t('Auto Queue'),
+              innerHTML: 'Auto Queue',
               // textContent: "Auto Queue"
-            },
-            [
-              $el('input', {
-                id: 'autoQueueCheckbox',
-                type: 'checkbox',
-                checked: false,
-                title: _t(
-                  'Automatically queue prompt when the queue size hits 0.'
-                ),
-              }),
-            ]
-          ),
-        ]),
-      ]),
+            }),
+            $el('input', {
+              id: 'autoQueueCheckbox',
+              type: 'checkbox',
+              checked: false,
+              title: 'Automatically queue prompt when the queue size hits 0',
+              onchange: (e) => {
+                this.autoQueueEnabled = e.target.checked
+                autoQueueModeEl.style.display = this.autoQueueEnabled
+                  ? ''
+                  : 'none'
+              },
+            }),
+            autoQueueModeEl,
+          ]),
+        ]
+      ),
       $el('div.comfy-menu-btns', [
         $el('button', {
           id: 'queue-front-button',
-          textContent: _t('Queue Front'),
+          textContent: 'Queue Front',
           onclick: () => app.queuePrompt(-1, this.batchCount),
         }),
         $el('button', {
           $: (b) => (this.queue.button = b),
           id: 'comfy-view-queue-button',
-          textContent: _t('View Queue'),
+          textContent: 'View Queue',
           onclick: () => {
             this.history.hide()
             this.queue.toggle()
@@ -495,7 +552,7 @@ export class ComfyUI {
         $el('button', {
           $: (b) => (this.history.button = b),
           id: 'comfy-view-history-button',
-          textContent: _t('View History'),
+          textContent: 'View History',
           onclick: () => {
             this.queue.hide()
             this.history.toggle()
@@ -506,11 +563,11 @@ export class ComfyUI {
       this.history.element,
       $el('button', {
         id: 'comfy-save-button',
-        textContent: _t('Save JSON'),
+        textContent: 'Save',
         onclick: () => {
           let filename = 'workflow.json'
           if (promptFilename.value) {
-            filename = prompt(_t('Save workflow as:'), filename)
+            filename = prompt('Save workflow as:', filename)
             if (!filename) return
             if (!filename.toLowerCase().endsWith('.json')) {
               filename += '.json'
@@ -536,7 +593,7 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-dev-save-api-button',
-        textContent: _t('Save (API Format)'),
+        textContent: 'Save (API Format)',
         style: { width: '100%', display: 'none' },
         onclick: () => {
           let filename = 'workflow_api.json'
@@ -567,24 +624,24 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-load-button',
-        textContent: _t('Load JSON'),
+        textContent: 'Load',
         onclick: () => fileInput.click(),
       }),
       $el('button', {
         id: 'comfy-refresh-button',
-        textContent: _t('Refresh Data'),
+        textContent: 'Refresh',
         onclick: () => app.refreshComboInNodes(),
       }),
       $el('button', {
         id: 'comfy-clipspace-button',
-        textContent: _t('Clipspace'),
+        textContent: 'Clipspace',
         onclick: () => app.openClipspace(),
       }),
       $el('button', {
         id: 'comfy-clear-button',
-        textContent: _t('Clear Workflow'),
+        textContent: 'Clear',
         onclick: () => {
-          if (!confirmClear.value || confirm('确定要清空当前工作流吗？')) {
+          if (!confirmClear.value || confirm('Clear workflow?')) {
             app.clean()
             app.graph.clear()
           }
@@ -592,63 +649,14 @@ export class ComfyUI {
       }),
       $el('button', {
         id: 'comfy-load-default-button',
-        textContent: _t('Load Default Workflow'),
+        textContent: 'Load Default',
         onclick: async () => {
-          if (!confirmClear.value || confirm(_t('Load default workflow?'))) {
+          if (!confirmClear.value || confirm('Load default workflow?')) {
             await app.loadGraphData()
           }
         },
       }),
     ])
-
-    this.userSelection = $el(
-      'div.comfy-user-selection',
-      {
-        id: 'comfy-user-selection',
-        style: { display: 'none' },
-        parent: document.body,
-      },
-      [
-        $el('main.comfy-user-selection-inner', {}, [
-          $el('h1', { textContent: _t('ComfyUI') }),
-          $el('form', {}, [
-            $el('section', {}, [
-              $el('label', {}, [
-                $el('span', { textContent: _t('New User') }),
-                $el('input', {
-                  type: 'text',
-                  placeholder: _t('Enter a username'),
-                }),
-              ]),
-            ]),
-            $el('div.comfy-user-existing', {}, [
-              $el('span.or-separator', { textContent: _t('OR') }),
-              $el('section', {}, [
-                $el('label', {}, [
-                  $el('span', { textContent: _t('Existing User') }),
-                  $el('select', {}, [
-                    $el('option', {
-                      hidden: true,
-                      selected: true,
-                      disabled: true,
-                      value: '',
-                      textContent: _t('Select a user'),
-                    }),
-                  ]),
-                ]),
-              ]),
-            ]),
-
-            $el('footer', {}, [
-              $el('span.comfy-user-error', { textContent: '' }),
-              $el('button.comfy-btn.comfy-user-button-next', {
-                textContent: _t('Next'),
-              }),
-            ]),
-          ]),
-        ]),
-      ]
-    )
 
     const devMode = this.settings.addSetting({
       id: 'Comfy.DevMode',
@@ -675,10 +683,13 @@ export class ComfyUI {
       if (
         this.lastQueueSize != 0 &&
         status.exec_info.queue_remaining == 0 &&
-        document.getElementById('autoQueueCheckbox').checked &&
+        this.autoQueueEnabled &&
+        (this.autoQueueMode === 'instant' || this.graphHasChanged) &&
         !app.lastExecutionError
       ) {
         app.queuePrompt(0, this.batchCount)
+        status.exec_info.queue_remaining += this.batchCount
+        this.graphHasChanged = false
       }
       this.lastQueueSize = status.exec_info.queue_remaining
     }

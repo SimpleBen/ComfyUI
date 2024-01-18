@@ -276,6 +276,9 @@ export class ComfyLogging {
       id: settingId,
       name: settingId,
       defaultValue: true,
+      onChange: (value) => {
+        this.enabled = value
+      },
       type: (name, setter, value) => {
         return $el('tr', [
           $el('td', [
@@ -293,7 +296,7 @@ export class ComfyLogging {
                 type: 'checkbox',
                 checked: value,
                 onchange: (event) => {
-                  setter((this.enabled = event.target.checked))
+                  setter(event.target.checked)
                 },
               }),
               $el('button', {
@@ -301,6 +304,11 @@ export class ComfyLogging {
                 onclick: () => {
                   this.app.ui.settings.element.close()
                   this.dialog.show()
+                },
+                style: {
+                  fontSize: '14px',
+                  display: 'block',
+                  marginTop: '5px',
                 },
               }),
             ]
