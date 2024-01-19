@@ -1,7 +1,9 @@
 {
-  "Convert to nodes": "拆分为多个节点",
+  "Group Nodes": "组节点",
+  "Convert to Nodes": "拆分为多个节点",
   "Convert to Group Node": "转换为组节点",
   "Manage Group Nodes": "管理组节点",
+  "Delete Group Node": "删除组节点",
 
   "Add Group For Selected Nodes": "为所选节点创建组",
   "Add Selected Nodes To Group": "将所选节点添加到组",
@@ -100,6 +102,7 @@
   "Clipspace": "剪贴板",
   "Name": "名称",
   "Removed": "移除",
+  "Visible": "可见",
 
   "Clear {name}": "清空 {name}",
   "Queue Prompt": "提交生成",
