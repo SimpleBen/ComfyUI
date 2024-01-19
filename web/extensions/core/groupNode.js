@@ -941,7 +941,7 @@ export class GroupNodeHandler {
     this.node.getExtraMenuOptions = function (_, options) {
       getExtraMenuOptions?.apply(this, arguments)
 
-      let optionIndex = options.findIndex((o) => o.content === 'Outputs')
+      let optionIndex = options.findIndex((o) => o && o.content === 'Outputs')
       if (optionIndex === -1) optionIndex = options.length
       else optionIndex++
       options.splice(

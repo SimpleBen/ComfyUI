@@ -225,23 +225,16 @@ class ComfyList {
     this.element.replaceChildren(
       ...Object.keys(items).flatMap((section) => [
         $el('h4', {
-          textContent: LIST_ITEM_MAP[section.toLowerCase()] ?? section,
+          textContent: section,
         }),
         $el('div.comfy-list-items', [
           ...(this.#reverse ? items[section].reverse() : items[section]).map(
             (item) => {
               // Allow items to specify a custom remove action (e.g. for interrupt current prompt)
-              const removeAction = item.remove
-                ? {
-                    ...item.remove,
-                    name:
-                      LIST_ITEM_MAP[item.remove.name.toLowerCase()] ??
-                      item.remove.name,
-                  }
-                : {
-                    name: _t('Delete'),
-                    cb: () => api.deleteItem(this.#type, item.prompt[1]),
-                  }
+              const removeAction = item.remove || {
+                name: _t('Delete'),
+                cb: () => api.deleteItem(this.#type, item.prompt[1]),
+              }
               return $el(
                 'div.comfy-list-item',
                 { textContent: item.prompt[0] + ': ' },
@@ -669,6 +662,55 @@ export class ComfyUI {
         },
       }),
     ])
+
+    this.userSelection = $el(
+      'div.comfy-user-selection',
+      {
+        id: 'comfy-user-selection',
+        style: { display: 'none' },
+        parent: document.body,
+      },
+      [
+        $el('main.comfy-user-selection-inner', {}, [
+          $el('h1', { textContent: _t('ComfyUI') }),
+          $el('form', {}, [
+            $el('section', {}, [
+              $el('label', {}, [
+                $el('span', { textContent: _t('New User') }),
+                $el('input', {
+                  type: 'text',
+                  placeholder: _t('Enter a username'),
+                }),
+              ]),
+            ]),
+            $el('div.comfy-user-existing', {}, [
+              $el('span.or-separator', { textContent: _t('OR') }),
+              $el('section', {}, [
+                $el('label', {}, [
+                  $el('span', { textContent: _t('Existing User') }),
+                  $el('select', {}, [
+                    $el('option', {
+                      hidden: true,
+                      selected: true,
+                      disabled: true,
+                      value: '',
+                      textContent: _t('Select a user'),
+                    }),
+                  ]),
+                ]),
+              ]),
+            ]),
+
+            $el('footer', {}, [
+              $el('span.comfy-user-error', { textContent: '' }),
+              $el('button.comfy-btn.comfy-user-button-next', {
+                textContent: _t('Next'),
+              }),
+            ]),
+          ]),
+        ]),
+      ]
+    )
 
     const devMode = this.settings.addSetting({
       id: 'Comfy.DevMode',
