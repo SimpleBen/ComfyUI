@@ -422,7 +422,7 @@ export class ComfyUI {
     autoQueueModeEl.style.display = 'none'
 
     api.addEventListener('graphChanged', () => {
-      if (this.autoQueueMode === 'change') {
+      if (this.autoQueueMode === 'change' && this.autoQueueEnabled === true) {
         if (this.lastQueueSize === 0) {
           this.graphHasChanged = false
           app.queuePrompt(0, this.batchCount)
@@ -646,7 +646,7 @@ export class ComfyUI {
         id: 'comfy-clear-button',
         textContent: _t('Clear Workflow'),
         onclick: () => {
-          if (!confirmClear.value || confirm('确定要清空当前工作流吗？')) {
+          if (!confirmClear.value || confirm(_t('Clear workflow?'))) {
             app.clean()
             app.graph.clear()
           }
