@@ -118,6 +118,7 @@
   "Load JSON": "加载 JSON",
   "Refresh Data": "刷新数据",
   "Clear Workflow": "清空工作流",
+  "Clear workflow?": "确定要清空工作流吗？",
   "Load Default Workflow": "加载默认工作流",
   "Queue size: {size}": "队列大小: {size}",
   "Reconnecting...": "正在重新连接...",
