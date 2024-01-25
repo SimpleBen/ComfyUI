@@ -12005,9 +12005,14 @@ LGraphNode.prototype.executeAction = function(action)
         if (prevent_timeout) {
           return
         }
-        timeout_close = setTimeout(function () {
-          dialog.close()
-        }, 500)
+        timeout_close = setTimeout(
+          function () {
+            dialog.close()
+          },
+          typeof options.hide_on_mouse_leave === 'number'
+            ? options.hide_on_mouse_leave
+            : 500
+        )
       })
       // if filtering, check focus changed to comboboxes and prevent closing
       if (options.do_type_filter) {
