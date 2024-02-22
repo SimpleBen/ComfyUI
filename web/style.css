@@ -764,15 +764,6 @@ dialog::backdrop {
   transition: all 0.2s;
   box-shadow: 0 10px 20px -5px rgb(0 0 0 / 50%);
 }
-#comfy-settings-dialog tbody button,
-#comfy-settings-dialog table > button {
-  background-color: var(--bg-color);
-  border: 1px var(--border-color) solid;
-  border-radius: 0;
-  color: var(--input-text);
-  font-size: 1rem;
-  padding: 0.5rem;
-}
 
 #comfy-settings-dialog button.comfy-modal-close:hover {
   background-color: var(--tr-odd-bg-color);
@@ -818,8 +809,6 @@ dialog::backdrop {
   color: var(--input-text);
   font-size: 1rem;
   font-weight: bold;
-  padding: 8px;
-  text-align: center;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -1000,6 +989,7 @@ dialog::backdrop {
 /* Search box */
 
 .litegraph.litesearchbox {
+  max-width: 50vw;
   z-index: 9999 !important;
   background-color: var(--comfy-menu-bg) !important;
   display: block;

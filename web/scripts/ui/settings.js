@@ -16,17 +16,7 @@ export class ComfySettingsDialog extends ComfyDialog {
       },
       [
         $el('table.comfy-modal-content.comfy-table', [
-          $el(
-            'caption',
-            { textContent: _t('Settings') },
-            $el('button.comfy-btn', {
-              type: 'button',
-              textContent: '\u00d7',
-              onclick: () => {
-                this.element.close()
-              },
-            })
-          ),
+          $el('caption', { textContent: _t('Settings') }),
           $el('tbody', { $: (tbody) => (this.textElement = tbody) }),
           $el('button.comfy-modal-close', {
             type: 'button',

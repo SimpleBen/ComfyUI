@@ -217,7 +217,7 @@
   color: white;
   box-sizing: border-box;
   margin: 0;
-  max-width: 300px;
+  max-width: none !important;
 }
 
 .litegraph.litesearchbox .name {
