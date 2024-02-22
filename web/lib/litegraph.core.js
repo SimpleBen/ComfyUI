@@ -12091,82 +12091,254 @@ LGraphNode.prototype.executeAction = function(action)
         var aSlots = LiteGraph.slot_types_in
         var nSlots = aSlots.length // this for object :: Object.keys(aSlots).length;
 
-        if (
-          options.type_filter_in == LiteGraph.EVENT ||
-          options.type_filter_in == LiteGraph.ACTION
-        )
-          options.type_filter_in = '_event_'
-        /* this will filter on * .. but better do it manually in case
+        return dialog
+      }
+
+      LGraphCanvas.search_limit = -1
+      LGraphCanvas.prototype.showSearchBox = function (event, options) {
+        // proposed defaults
+        var def_options = {
+          slot_from: null,
+          node_from: null,
+          node_to: null,
+          do_type_filter: LiteGraph.search_filter_enabled, // TODO check for registered_slot_[in/out]_types not empty // this will be checked for functionality enabled : filter on slot type, in and out
+          type_filter_in: false, // these are default: pass to set initially set values
+          type_filter_out: false,
+          show_general_if_none_on_typefilter: true,
+          show_general_after_typefiltered: true,
+          hide_on_mouse_leave: LiteGraph.search_hide_on_mouse_leave,
+          show_all_if_empty: true,
+          show_all_on_open: LiteGraph.search_show_all_on_open,
+        }
+        options = Object.assign(def_options, options || {})
+
+        //console.log(options);
+
+        var that = this
+        var input_html = ''
+        var graphcanvas = LGraphCanvas.active_canvas
+        var canvas = graphcanvas.canvas
+        var root_document = canvas.ownerDocument || document
+
+        var dialog = document.createElement('div')
+        dialog.className = 'litegraph litesearchbox graphdialog rounded'
+        dialog.innerHTML =
+          "<span class='name'>Search</span> <input autofocus type='text' class='value rounded'/>"
+        if (options.do_type_filter) {
+          dialog.innerHTML +=
+            "<select class='slot_in_type_filter'><option value=''></option></select>"
+          dialog.innerHTML +=
+            "<select class='slot_out_type_filter'><option value=''></option></select>"
+        }
+        dialog.innerHTML += "<div class='helper'></div>"
+
+        if (root_document.fullscreenElement)
+          root_document.fullscreenElement.appendChild(dialog)
+        else {
+          root_document.body.appendChild(dialog)
+          root_document.body.style.overflow = 'hidden'
+        }
+        // dialog element has been appended
+
+        if (options.do_type_filter) {
+          var selIn = dialog.querySelector('.slot_in_type_filter')
+          var selOut = dialog.querySelector('.slot_out_type_filter')
+        }
+
+        dialog.close = function () {
+          that.search_box = null
+          this.blur()
+          canvas.focus()
+          root_document.body.style.overflow = ''
+
+          setTimeout(function () {
+            that.canvas.focus()
+          }, 20) //important, if canvas loses focus keys wont be captured
+          if (dialog.parentNode) {
+            dialog.parentNode.removeChild(dialog)
+          }
+        }
+
+        if (this.ds.scale > 1) {
+          dialog.style.transform = 'scale(' + this.ds.scale + ')'
+        }
+
+        // hide on mouse leave
+        if (options.hide_on_mouse_leave) {
+          var prevent_timeout = false
+          var timeout_close = null
+          LiteGraph.pointerListenerAdd(dialog, 'enter', function (e) {
+            if (timeout_close) {
+              clearTimeout(timeout_close)
+              timeout_close = null
+            }
+          })
+          LiteGraph.pointerListenerAdd(dialog, 'leave', function (e) {
+            if (prevent_timeout) {
+              return
+            }
+            timeout_close = setTimeout(
+              function () {
+                dialog.close()
+              },
+              typeof options.hide_on_mouse_leave === 'number'
+                ? options.hide_on_mouse_leave
+                : 500
+            )
+          })
+          // if filtering, check focus changed to comboboxes and prevent closing
+          if (options.do_type_filter) {
+            selIn.addEventListener('click', function (e) {
+              prevent_timeout++
+            })
+            selIn.addEventListener('blur', function (e) {
+              prevent_timeout = 0
+            })
+            selIn.addEventListener('change', function (e) {
+              prevent_timeout = -1
+            })
+            selOut.addEventListener('click', function (e) {
+              prevent_timeout++
+            })
+            selOut.addEventListener('blur', function (e) {
+              prevent_timeout = 0
+            })
+            selOut.addEventListener('change', function (e) {
+              prevent_timeout = -1
+            })
+          }
+        }
+
+        if (that.search_box) {
+          that.search_box.close()
+        }
+        that.search_box = dialog
+
+        var helper = dialog.querySelector('.helper')
+
+        var first = null
+        var timeout = null
+        var selected = null
+
+        var input = dialog.querySelector('input')
+        if (input) {
+          input.addEventListener('blur', function (e) {
+            this.focus()
+          })
+          input.addEventListener('keydown', function (e) {
+            if (e.keyCode == 38) {
+              //UP
+              changeSelection(false)
+            } else if (e.keyCode == 40) {
+              //DOWN
+              changeSelection(true)
+            } else if (e.keyCode == 27) {
+              //ESC
+              dialog.close()
+            } else if (e.keyCode == 13) {
+              if (selected) {
+                select(unescape(selected.dataset['type']))
+              } else if (first) {
+                select(first)
+              } else {
+                dialog.close()
+              }
+            } else {
+              if (timeout) {
+                clearInterval(timeout)
+              }
+              timeout = setTimeout(refreshHelper, 10)
+              return
+            }
+            e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
+            return true
+          })
+        }
+
+        // if should filter on type, load and fill selected and choose elements if passed
+        if (options.do_type_filter) {
+          if (selIn) {
+            var aSlots = LiteGraph.slot_types_in
+            var nSlots = aSlots.length // this for object :: Object.keys(aSlots).length;
+
+            if (
+              options.type_filter_in == LiteGraph.EVENT ||
+              options.type_filter_in == LiteGraph.ACTION
+            )
+              options.type_filter_in = '_event_'
+            /* this will filter on * .. but better do it manually in case
                 else if(options.type_filter_in === "" || options.type_filter_in === 0)
                     options.type_filter_in = "*";*/
 
-        for (var iK = 0; iK < nSlots; iK++) {
-          var opt = document.createElement('option')
-          opt.value = aSlots[iK]
-          opt.innerHTML = aSlots[iK]
-          selIn.appendChild(opt)
-          if (
-            options.type_filter_in !== false &&
-            (options.type_filter_in + '').toLowerCase() ==
-              (aSlots[iK] + '').toLowerCase()
-          ) {
-            //selIn.selectedIndex ..
-            opt.selected = true
-            //console.log("comparing IN "+options.type_filter_in+" :: "+aSlots[iK]);
-          } else {
-            //console.log("comparing OUT "+options.type_filter_in+" :: "+aSlots[iK]);
+            for (var iK = 0; iK < nSlots; iK++) {
+              var opt = document.createElement('option')
+              opt.value = aSlots[iK]
+              opt.innerHTML = aSlots[iK]
+              selIn.appendChild(opt)
+              if (
+                options.type_filter_in !== false &&
+                (options.type_filter_in + '').toLowerCase() ==
+                  (aSlots[iK] + '').toLowerCase()
+              ) {
+                //selIn.selectedIndex ..
+                opt.selected = true
+                //console.log("comparing IN "+options.type_filter_in+" :: "+aSlots[iK]);
+              } else {
+                //console.log("comparing OUT "+options.type_filter_in+" :: "+aSlots[iK]);
+              }
+            }
+            selIn.addEventListener('change', function () {
+              refreshHelper()
+            })
           }
-        }
-        selIn.addEventListener('change', function () {
-          refreshHelper()
-        })
-      }
-      if (selOut) {
-        var aSlots = LiteGraph.slot_types_out
-        var nSlots = aSlots.length // this for object :: Object.keys(aSlots).length;
+          if (selOut) {
+            var aSlots = LiteGraph.slot_types_out
+            var nSlots = aSlots.length // this for object :: Object.keys(aSlots).length;
 
-        if (
-          options.type_filter_out == LiteGraph.EVENT ||
-          options.type_filter_out == LiteGraph.ACTION
-        )
-          options.type_filter_out = '_event_'
-        /* this will filter on * .. but better do it manually in case
+            if (
+              options.type_filter_out == LiteGraph.EVENT ||
+              options.type_filter_out == LiteGraph.ACTION
+            )
+              options.type_filter_out = '_event_'
+            /* this will filter on * .. but better do it manually in case
                 else if(options.type_filter_out === "" || options.type_filter_out === 0)
                     options.type_filter_out = "*";*/
 
-        for (var iK = 0; iK < nSlots; iK++) {
-          var opt = document.createElement('option')
-          opt.value = aSlots[iK]
-          opt.innerHTML = aSlots[iK]
-          selOut.appendChild(opt)
-          if (
-            options.type_filter_out !== false &&
-            (options.type_filter_out + '').toLowerCase() ==
-              (aSlots[iK] + '').toLowerCase()
-          ) {
-            //selOut.selectedIndex ..
-            opt.selected = true
+            for (var iK = 0; iK < nSlots; iK++) {
+              var opt = document.createElement('option')
+              opt.value = aSlots[iK]
+              opt.innerHTML = aSlots[iK]
+              selOut.appendChild(opt)
+              if (
+                options.type_filter_out !== false &&
+                (options.type_filter_out + '').toLowerCase() ==
+                  (aSlots[iK] + '').toLowerCase()
+              ) {
+                //selOut.selectedIndex ..
+                opt.selected = true
+              }
+            }
+            selOut.addEventListener('change', function () {
+              refreshHelper()
+            })
           }
         }
-        selOut.addEventListener('change', function () {
-          refreshHelper()
-        })
-      }
-    }
 
-    //compute best position
-    var rect = canvas.getBoundingClientRect()
+        //compute best position
+        var rect = canvas.getBoundingClientRect()
 
-    var left = (event ? event.clientX : rect.left + rect.width * 0.5) - 80
-    var top = (event ? event.clientY : rect.top + rect.height * 0.5) - 20
-    dialog.style.left = left + 'px'
-    dialog.style.top = top + 'px'
+        var left = (event ? event.clientX : rect.left + rect.width * 0.5) - 80
+        var top = (event ? event.clientY : rect.top + rect.height * 0.5) - 20
+        dialog.style.left = left + 'px'
+        dialog.style.top = top + 'px'
 
-    //To avoid out of screen problems
-    if (event.layerY > rect.height - 200)
-      helper.style.maxHeight = rect.height - event.layerY - 20 + 'px'
+        //To avoid out of screen problems
+        if (event.layerY > rect.height - 200)
+          helper.style.maxHeight = rect.height - event.layerY - 20 + 'px'
 
-    /*
+        /*
         var offsetx = -20;
         var offsety = -20;
         if (rect) {
@@ -12184,13 +12356,439 @@ LGraphNode.prototype.executeAction = function(action)
         canvas.parentNode.appendChild(dialog);
 		*/
 
-    input.focus()
-    if (options.show_all_on_open) refreshHelper()
+        input.focus()
+        if (options.show_all_on_open) refreshHelper()
 
-    function select(name) {
-      if (name) {
-        if (that.onSearchBoxSelection) {
-          that.onSearchBoxSelection(name, event, graphcanvas)
+        function select(name) {
+          if (name) {
+            if (that.onSearchBoxSelection) {
+              that.onSearchBoxSelection(name, event, graphcanvas)
+            } else {
+              var extra = LiteGraph.searchbox_extras[name.toLowerCase()]
+              if (extra) {
+                name = extra.type
+              }
+
+              graphcanvas.graph.beforeChange()
+              var node = LiteGraph.createNode(name)
+              if (node) {
+                node.pos = graphcanvas.convertEventToCanvasOffset(event)
+                graphcanvas.graph.add(node, false)
+              }
+
+              if (extra && extra.data) {
+                if (extra.data.properties) {
+                  for (var i in extra.data.properties) {
+                    node.addProperty(i, extra.data.properties[i])
+                  }
+                }
+                if (extra.data.inputs) {
+                  node.inputs = []
+                  for (var i in extra.data.inputs) {
+                    node.addOutput(
+                      extra.data.inputs[i][0],
+                      extra.data.inputs[i][1]
+                    )
+                  }
+                }
+                if (extra.data.outputs) {
+                  node.outputs = []
+                  for (var i in extra.data.outputs) {
+                    node.addOutput(
+                      extra.data.outputs[i][0],
+                      extra.data.outputs[i][1]
+                    )
+                  }
+                }
+                if (extra.data.title) {
+                  node.title = extra.data.title
+                }
+                if (extra.data.json) {
+                  node.configure(extra.data.json)
+                }
+              }
+
+              // join node after inserting
+              if (options.node_from) {
+                var iS = false
+                switch (typeof options.slot_from) {
+                  case 'string':
+                    iS = options.node_from.findOutputSlot(options.slot_from)
+                    break
+                  case 'object':
+                    if (options.slot_from.name) {
+                      iS = options.node_from.findOutputSlot(
+                        options.slot_from.name
+                      )
+                    } else {
+                      iS = -1
+                    }
+                    if (
+                      iS == -1 &&
+                      typeof options.slot_from.slot_index !== 'undefined'
+                    )
+                      iS = options.slot_from.slot_index
+                    break
+                  case 'number':
+                    iS = options.slot_from
+                    break
+                  default:
+                    iS = 0 // try with first if no name set
+                }
+                if (typeof options.node_from.outputs[iS] !== 'undefined') {
+                  if (iS !== false && iS > -1) {
+                    options.node_from.connectByType(
+                      iS,
+                      node,
+                      options.node_from.outputs[iS].type
+                    )
+                  }
+                } else {
+                  // console.warn("cant find slot " + options.slot_from);
+                }
+              }
+              if (options.node_to) {
+                var iS = false
+                switch (typeof options.slot_from) {
+                  case 'string':
+                    iS = options.node_to.findInputSlot(options.slot_from)
+                    break
+                  case 'object':
+                    if (options.slot_from.name) {
+                      iS = options.node_to.findInputSlot(options.slot_from.name)
+                    } else {
+                      iS = -1
+                    }
+                    if (
+                      iS == -1 &&
+                      typeof options.slot_from.slot_index !== 'undefined'
+                    )
+                      iS = options.slot_from.slot_index
+                    break
+                  case 'number':
+                    iS = options.slot_from
+                    break
+                  default:
+                    iS = 0 // try with first if no name set
+                }
+                if (typeof options.node_to.inputs[iS] !== 'undefined') {
+                  if (iS !== false && iS > -1) {
+                    // try connection
+                    options.node_to.connectByTypeOutput(
+                      iS,
+                      node,
+                      options.node_to.inputs[iS].type
+                    )
+                  }
+                } else {
+                  // console.warn("cant find slot_nodeTO " + options.slot_from);
+                }
+              }
+
+              graphcanvas.graph.afterChange()
+            }
+          }
+
+          dialog.close()
+        }
+
+        function changeSelection(forward) {
+          var prev = selected
+          if (selected) {
+            selected.classList.remove('selected')
+          }
+          if (!selected) {
+            selected = forward
+              ? helper.childNodes[0]
+              : helper.childNodes[helper.childNodes.length]
+          } else {
+            selected = forward ? selected.nextSibling : selected.previousSibling
+            if (!selected) {
+              selected = prev
+            }
+          }
+          if (!selected) {
+            return
+          }
+          selected.classList.add('selected')
+          selected.scrollIntoView({ block: 'end', behavior: 'smooth' })
+        }
+
+        function refreshHelper() {
+          timeout = null
+          var str = input.value
+          first = null
+          helper.innerHTML = ''
+          if (!str && !options.show_all_if_empty) {
+            return
+          }
+
+          if (that.onSearchBox) {
+            var list = that.onSearchBox(helper, str, graphcanvas)
+            if (list) {
+              for (var i = 0; i < list.length; ++i) {
+                addResult(list[i])
+              }
+            }
+          } else {
+            var c = 0
+            str = str.toLowerCase()
+            var filter = graphcanvas.filter || graphcanvas.graph.filter
+
+            // filter by type preprocess
+            if (options.do_type_filter && that.search_box) {
+              var sIn = that.search_box.querySelector('.slot_in_type_filter')
+              var sOut = that.search_box.querySelector('.slot_out_type_filter')
+            } else {
+              var sIn = false
+              var sOut = false
+            }
+
+            //extras
+            for (var i in LiteGraph.searchbox_extras) {
+              var extra = LiteGraph.searchbox_extras[i]
+              if (
+                (!options.show_all_if_empty || str) &&
+                extra.desc.toLowerCase().indexOf(str) === -1
+              ) {
+                continue
+              }
+              var ctor = LiteGraph.registered_node_types[extra.type]
+              if (ctor && ctor.filter != filter) continue
+              if (!inner_test_filter(extra.type)) continue
+              addResult(extra.desc, 'searchbox_extra')
+              if (
+                LGraphCanvas.search_limit !== -1 &&
+                c++ > LGraphCanvas.search_limit
+              ) {
+                break
+              }
+            }
+
+            var filtered = null
+            if (Array.prototype.filter) {
+              //filter supported
+              var keys = Object.keys(LiteGraph.registered_node_types) //types
+              var filtered = keys.filter(inner_test_filter)
+            } else {
+              filtered = []
+              for (var i in LiteGraph.registered_node_types) {
+                if (inner_test_filter(i)) filtered.push(i)
+              }
+            }
+
+            for (var i = 0; i < filtered.length; i++) {
+              addResult(filtered[i])
+              if (
+                LGraphCanvas.search_limit !== -1 &&
+                c++ > LGraphCanvas.search_limit
+              ) {
+                break
+              }
+            }
+
+            // add general type if filtering
+            if (
+              options.show_general_after_typefiltered &&
+              (sIn.value || sOut.value)
+            ) {
+              filtered_extra = []
+              for (var i in LiteGraph.registered_node_types) {
+                if (
+                  inner_test_filter(i, {
+                    inTypeOverride: sIn && sIn.value ? '*' : false,
+                    outTypeOverride: sOut && sOut.value ? '*' : false,
+                  })
+                )
+                  filtered_extra.push(i)
+              }
+              for (var i = 0; i < filtered_extra.length; i++) {
+                addResult(filtered_extra[i], 'generic_type')
+                if (
+                  LGraphCanvas.search_limit !== -1 &&
+                  c++ > LGraphCanvas.search_limit
+                ) {
+                  break
+                }
+              }
+            }
+
+            // check il filtering gave no results
+            if (
+              (sIn.value || sOut.value) &&
+              helper.childNodes.length == 0 &&
+              options.show_general_if_none_on_typefilter
+            ) {
+              filtered_extra = []
+              for (var i in LiteGraph.registered_node_types) {
+                if (inner_test_filter(i, { skipFilter: true }))
+                  filtered_extra.push(i)
+              }
+              for (var i = 0; i < filtered_extra.length; i++) {
+                addResult(filtered_extra[i], 'not_in_filter')
+                if (
+                  LGraphCanvas.search_limit !== -1 &&
+                  c++ > LGraphCanvas.search_limit
+                ) {
+                  break
+                }
+              }
+            }
+
+            function inner_test_filter(type, optsIn) {
+              var optsIn = optsIn || {}
+              var optsDef = {
+                skipFilter: false,
+                inTypeOverride: false,
+                outTypeOverride: false,
+              }
+              var opts = Object.assign(optsDef, optsIn)
+              var ctor = LiteGraph.registered_node_types[type]
+              if (filter && ctor.filter != filter) return false
+              if (
+                (!options.show_all_if_empty || str) &&
+                type.toLowerCase().indexOf(str) === -1 &&
+                (!ctor.title || ctor.title.toLowerCase().indexOf(str) === -1)
+              )
+                return false
+
+              // filter by slot IN, OUT types
+              if (options.do_type_filter && !opts.skipFilter) {
+                var sType = type
+
+                var sV = sIn.value
+                if (opts.inTypeOverride !== false) sV = opts.inTypeOverride
+                //if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
+
+                if (sIn && sV) {
+                  //console.log("will check filter against "+sV);
+                  if (
+                    LiteGraph.registered_slot_in_types[sV] &&
+                    LiteGraph.registered_slot_in_types[sV].nodes
+                  ) {
+                    // type is stored
+                    //console.debug("check "+sType+" in "+LiteGraph.registered_slot_in_types[sV].nodes);
+                    var doesInc =
+                      LiteGraph.registered_slot_in_types[sV].nodes.includes(
+                        sType
+                      )
+                    if (doesInc !== false) {
+                      //console.log(sType+" HAS "+sV);
+                    } else {
+                      /*console.debug(LiteGraph.registered_slot_in_types[sV]);
+                                    console.log(+" DONT includes "+type);*/
+                      return false
+                    }
+                  }
+                }
+
+                var sV = sOut.value
+                if (opts.outTypeOverride !== false) sV = opts.outTypeOverride
+                //if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
+
+                if (sOut && sV) {
+                  //console.log("search will check filter against "+sV);
+                  if (
+                    LiteGraph.registered_slot_out_types[sV] &&
+                    LiteGraph.registered_slot_out_types[sV].nodes
+                  ) {
+                    // type is stored
+                    //console.debug("check "+sType+" in "+LiteGraph.registered_slot_out_types[sV].nodes);
+                    var doesInc =
+                      LiteGraph.registered_slot_out_types[sV].nodes.includes(
+                        sType
+                      )
+                    if (doesInc !== false) {
+                      //console.log(sType+" HAS "+sV);
+                    } else {
+                      /*console.debug(LiteGraph.registered_slot_out_types[sV]);
+                                    console.log(+" DONT includes "+type);*/
+                      return false
+                    }
+                  }
+                }
+              }
+              return true
+            }
+          }
+
+          function addResult(type, className) {
+            var help = document.createElement('div')
+            if (!first) {
+              first = type
+            }
+
+            const nodeType = LiteGraph.registered_node_types[type]
+            if (nodeType?.title) {
+              help.innerText = nodeType?.title
+              const typeEl = document.createElement('span')
+              typeEl.className = 'litegraph lite-search-item-type'
+              typeEl.textContent = type
+              help.append(typeEl)
+            } else {
+              help.innerText = type
+            }
+
+            help.dataset['type'] = escape(type)
+            help.className = 'litegraph lite-search-item'
+            if (className) {
+              help.className += ' ' + className
+            }
+            help.addEventListener('click', function (e) {
+              select(unescape(this.dataset['type']))
+            })
+            helper.appendChild(help)
+          }
+        }
+
+        return dialog
+      }
+
+      LGraphCanvas.prototype.showEditPropertyValue = function (
+        node,
+        property,
+        options
+      ) {
+        if (!node || node.properties[property] === undefined) {
+          return
+        }
+
+        options = options || {}
+        var that = this
+
+        var info = node.getPropertyInfo(property)
+        var type = info.type
+
+        var input_html = ''
+
+        if (
+          type == 'string' ||
+          type == 'number' ||
+          type == 'array' ||
+          type == 'object'
+        ) {
+          input_html = "<input autofocus type='text' class='value'/>"
+        } else if ((type == 'enum' || type == 'combo') && info.values) {
+          input_html = "<select autofocus type='text' class='value'>"
+          for (var i in info.values) {
+            var v = i
+            if (info.values.constructor === Array) v = info.values[i]
+
+            input_html +=
+              "<option value='" +
+              v +
+              "' " +
+              (v == node.properties[property] ? 'selected' : '') +
+              '>' +
+              info.values[i] +
+              '</option>'
+          }
+          input_html += '</select>'
+        } else if (type == 'boolean' || type == 'toggle') {
+          input_html =
+            "<input autofocus type='checkbox' class='value' " +
+            (node.properties[property] ? 'checked' : '') +
+            '/>'
         } else {
           var extra = LiteGraph.searchbox_extras[name.toLowerCase()]
           if (extra) {

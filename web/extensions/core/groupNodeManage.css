@@ -54,7 +54,7 @@ ul.comfy-group-manage-list-items {
   all: unset;
   display: flex;
   flex-direction: column;
-  max-height: 70vh;
+  max-height: calc(100% - 40px);
   min-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;

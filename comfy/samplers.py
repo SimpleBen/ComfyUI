@@ -1,13 +1,9 @@
 from .k_diffusion import sampling as k_diffusion_sampling
 from .extra_samplers import uni_pc
 import torch
-import enum
 import collections
 from comfy import model_management
 import math
-from comfy import model_base
-import comfy.utils
-import comfy.conds
 
 def get_area_and_mult(conds, x_in, timestep_in):
     area = (x_in.shape[2], x_in.shape[3], 0, 0)
@@ -299,7 +295,7 @@ def simple_scheduler(model, steps):
 def ddim_scheduler(model, steps):
     s = model.model_sampling
     sigs = []
-    ss = len(s.sigmas) // steps
+    ss = max(len(s.sigmas) // steps, 1)
     x = 1
     while x < len(s.sigmas):
         sigs += [float(s.sigmas[x])]
@@ -656,6 +652,7 @@ def sampler_object(name):
 class KSampler:
     SCHEDULERS = SCHEDULER_NAMES
     SAMPLERS = SAMPLER_NAMES
+    DISCARD_PENULTIMATE_SIGMA_SAMPLERS = set(('dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2'))
 
     def __init__(self, model, steps, device, sampler=None, scheduler=None, denoise=None, model_options={}):
         self.model = model
@@ -674,7 +671,7 @@ class KSampler:
         sigmas = None
 
         discard_penultimate_sigma = False
-        if self.sampler in ['dpm_2', 'dpm_2_ancestral', 'uni_pc', 'uni_pc_bh2']:
+        if self.sampler in self.DISCARD_PENULTIMATE_SIGMA_SAMPLERS:
             steps += 1
             discard_penultimate_sigma = True
 
